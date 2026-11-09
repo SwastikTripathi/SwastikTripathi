@@ -124,7 +124,7 @@ def own_repos():
         lines = []
     own = []
     for line in lines[:4]:
-        name, title, note = (x.strip() for x in (line.split("|") + ["", ""])[:3])
+        name, title, note, url = (x.strip() for x in (line.split("|") + ["", "", ""])[:4])
         try:
             info = gh(f"repos/{ME}/{name}")
             cache[name] = {"lang": info.get("language") or "", "stars": info["stargazers_count"], "private": info["private"],
@@ -138,7 +138,7 @@ def own_repos():
         if logo:
             mime = "image/svg+xml" if logo.endswith(".svg") else "image/png"
             logo = f"data:{mime};base64," + base64.b64encode(open(logo, "rb").read()).decode()
-        own.append({"logo": logo, "name": title or name, "lang": c["lang"], "stars": c["stars"], "private": c["private"],
+        own.append({"url": url, "logo": logo, "name": title or name, "lang": c["lang"], "stars": c["stars"], "private": c["private"],
                     "about": note or c["description"], "pushed": c["pushed"]})
     json.dump(cache, open(cache_path, "w"), indent=1, sort_keys=True)
     return own
@@ -717,56 +717,81 @@ def wrap(text, width, lines):
     return out
 
 
-def workshop(T, d):
-    """My own repos as specimen cards pinned to a board, each with a wax seal, catalogue number and notes."""
-    own = d.get("own", [])
-    W, H = 840, 348
+def pinned_card(T, i, o, x, y, cw, tilt):
+    """One specimen card, hanging from its pin and swinging gently on it (GitHub shows SVGs as images, which never
+    see the mouse, so the board moves on its own instead of on hover)."""
     retro = T.get("print")
     ink, acc, muted = T["ink"], T["accent"], T["muted"]
     card_bg = "#f8f2e4" if retro else "#141415"
+    ch = 222
+    mx = x + cw / 2
+    when = dt.datetime.fromisoformat(o["pushed"].replace("Z", "+00:00"))
+    about = re.sub(r"\s*[—–]\s*", ", ", o["about"]) or f"A personal {o['lang'] or 'side'} project."
+    chars = int((cw - 32) / 5.3)
+    lines = wrap(about, chars, 4)
+    name = o["name"] if len(o["name"]) * 8 < cw - 30 else o["name"][:int((cw - 38) / 8)] + "…"
+    meta = "  ·  ".join(t for t in [f"touched {when:%b %Y}", "private" if o["private"] else f"★ {o['stars']}" if o["stars"] else ""] if t)
+    seal = (f'<g transform="translate({x + 34:.1f} {y + 40})"><g>'
+            
+            f'<clipPath id="logo{i}"><rect x="-20" y="-20" width="40" height="40" rx="9"/></clipPath>'
+            f'<rect x="-22.5" y="-22.5" width="45" height="45" rx="11" fill="none" stroke="{ink}" stroke-width=".6"/>'
+            f'<image href="{o["logo"]}" x="-20" y="-20" width="40" height="40" clip-path="url(#logo{i})"/></g></g>') if o.get("logo") else (
+            f'<g transform="translate({x + 34:.1f} {y + 40})">'
+            f'<g><animateTransform attributeName="transform" type="rotate" values="0;{6 if i % 2 else -6};0" dur="{7 + i}s" repeatCount="indefinite"/>'
+            + "".join(f'<circle cx="{19 * math.cos(math.radians(a)):.1f}" cy="{19 * math.sin(math.radians(a)):.1f}" r="3.2" fill="{acc}"/>' for a in range(0, 360, 30))
+            + f'<circle r="19" fill="{acc}"/><circle r="14.5" fill="none" stroke="{T["bg"] if retro else "#0c0c0d"}" stroke-width=".7"/>'
+            f'<text y="7" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="20" fill="{card_bg}">{esc(o["name"][0].upper())}</text></g></g>')
+    text = (f'<text x="{x + 64:.1f}" y="{y + 36}" font-family="{SERIF}" font-size="10" letter-spacing="2" fill="{muted}">No. {roman(i + 1)}</text>'
+            f'<text x="{x + 64:.1f}" y="{y + 52}" font-family="{SERIF}" font-style="italic" font-size="11" fill="{muted}">{esc(o["lang"] or "")}</text>'
+            f'<text x="{x + 16:.1f}" y="{y + 88}" font-family="{SERIF}" font-size="15.5" fill="{ink}">{esc(name)}</text>'
+            f'<line x1="{x + 16:.1f}" y1="{y + 99}" x2="{x + cw - 16:.1f}" y2="{y + 99}" stroke="{ink}" stroke-width=".5"/>'
+            f'<line x1="{x + 16:.1f}" y1="{y + 102}" x2="{x + cw - 16:.1f}" y2="{y + 102}" stroke="{ink}" stroke-width=".3"/>'
+            + "".join(f'<text x="{x + 16:.1f}" y="{y + 124 + k * 17}" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{ink}">{esc(l)}</text>'
+                      for k, l in enumerate(lines))
+            + f'<line x1="{x + 16:.1f}" y1="{y + ch - 34}" x2="{x + cw - 16:.1f}" y2="{y + ch - 34}" stroke="{T["faint"]}" stroke-width=".6" stroke-dasharray="2 3"/>'
+            f'<text x="{x + 16:.1f}" y="{y + ch - 16}" font-family="{SERIF}" font-size="10.5" letter-spacing=".6" fill="{muted}">{esc(meta)}</text>')
+    card = (f'<rect x="{x + 4:.1f}" y="{y + 5}" width="{cw:.1f}" height="{ch}" fill="{T["faint"]}" opacity=".55"/>'
+            f'<rect x="{x:.1f}" y="{y}" width="{cw:.1f}" height="{ch}" fill="{card_bg}" stroke="{ink}" stroke-width=".8"/>'
+            f'<rect x="{x + 4:.1f}" y="{y + 4}" width="{cw - 8:.1f}" height="{ch - 8}" fill="none" stroke="{ink}" stroke-width=".3"/>'
+            + seal + text +
+            f'<circle cx="{mx:.1f}" cy="{y + 2}" r="5" fill="{acc}" stroke="{ink}" stroke-width=".6"/><circle cx="{mx - 1.5:.1f}" cy="{y + .5}" r="1.4" fill="{card_bg}" opacity=".8"/>')
+    swing = 1.6 + (i % 2) * .5
+    sway = (f'<animateTransform attributeName="transform" type="rotate" dur="{5.5 + i * .9:.1f}s" repeatCount="indefinite" '
+            f'values="{tilt - swing:.2f} {mx:.1f} {y};{tilt + swing:.2f} {mx:.1f} {y};{tilt - swing:.2f} {mx:.1f} {y}" '
+            f'calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1" begin="-{i * 1.7:.1f}s"/>')
+    return f'<g>{intro("opacity", 0, 1, .2 + i * .25, .6)}<g transform="rotate({tilt:.2f} {mx:.1f} {y})">{sway}{card}</g></g>'
+
+
+WORKSHOP_HEAD = 84
+
+
+def workshop(T, d, part=None):
+    """My own repos as specimen cards pinned to a board. part=None: the whole plate. For the sheet edition, which
+    links each card to its own site: part="head" is the heading strip, part=i is card i's cell (a slice of 840/n)."""
+    own = d.get("own", [])
+    W = 840
+    retro = T.get("print")
     n = max(len(own), 1)
+    rng = random.Random(len(own) * 13 + 5)
+    tilts = [rng.uniform(-1.8, 1.8) for _ in own]
+    head = heading(T, 32, 44, "The workshop" if retro else "Workshop", "Things I make on my own. Click a card to visit it.", plate=4)
+    if part == "head":
+        return frame(T, W, WORKSHOP_HEAD, head, "The workshop: my own projects")
+    if part is not None:
+        cell = W / n
+        H = 262
+        first, last = part == 0, part == n - 1
+        x = (32 if first else 14) if n > 1 else 32
+        cw = cell - x - ((32 if last else 14) if n > 1 else 32)
+        o = own[part]
+        return frame(T, round(cell, 2), H, pinned_card(T, part, o, x, 18, cw, tilts[part]), o["name"] + ": " + o["about"],
+                     sides=("l" if first else "") + ("r" if last else ""))
     gap = 22
     cw = (W - 64 - gap * (n - 1)) / n
-    ch = 222
-    rng = random.Random(len(own) * 13 + 5)
-    out = [heading(T, 32, 44, "The workshop" if retro else "Workshop", "Things I make on my own, between pull requests.", plate=4)]
-    for i, o in enumerate(own):
-        x, y = 32 + i * (cw + gap), 94
-        tilt = rng.uniform(-1.8, 1.8)
-        mx = x + cw / 2
-        when = dt.datetime.fromisoformat(o["pushed"].replace("Z", "+00:00"))
-        about = re.sub(r"\s*[—–]\s*", ", ", o["about"]) or f"A personal {o['lang'] or 'side'} project."
-        chars = int((cw - 32) / 5.3)
-        lines = wrap(about, chars, 4)
-        name = o["name"] if len(o["name"]) * 8 < cw - 30 else o["name"][:int((cw - 38) / 8)] + "…"
-        meta = "  ·  ".join(t for t in [f"touched {when:%b %Y}", "private" if o["private"] else f"★ {o['stars']}" if o["stars"] else ""] if t)
-        seal = (f'<g transform="translate({x + 34:.1f} {y + 40})"><g>'
-                f'<animateTransform attributeName="transform" type="rotate" values="0;{4 if i % 2 else -4};0" dur="{7 + i}s" repeatCount="indefinite"/>'
-                f'<clipPath id="logo{i}"><rect x="-20" y="-20" width="40" height="40" rx="9"/></clipPath>'
-                f'<rect x="-22.5" y="-22.5" width="45" height="45" rx="11" fill="none" stroke="{ink}" stroke-width=".6"/>'
-                f'<image href="{o["logo"]}" x="-20" y="-20" width="40" height="40" clip-path="url(#logo{i})"/></g></g>') if o.get("logo") else (
-                f'<g transform="translate({x + 34:.1f} {y + 40})">'
-                f'<g><animateTransform attributeName="transform" type="rotate" values="0;{6 if i % 2 else -6};0" dur="{7 + i}s" repeatCount="indefinite"/>'
-                + "".join(f'<circle cx="{19 * math.cos(math.radians(a)):.1f}" cy="{19 * math.sin(math.radians(a)):.1f}" r="3.2" fill="{acc}"/>' for a in range(0, 360, 30))
-                + f'<circle r="19" fill="{acc}"/><circle r="14.5" fill="none" stroke="{T["bg"] if retro else "#0c0c0d"}" stroke-width=".7"/>'
-                f'<text y="7" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="20" fill="{card_bg}">{esc(o["name"][0].upper())}</text></g></g>')
-        text = (f'<text x="{x + 64:.1f}" y="{y + 36}" font-family="{SERIF}" font-size="10" letter-spacing="2" fill="{muted}">No. {roman(i + 1)}</text>'
-                f'<text x="{x + 64:.1f}" y="{y + 52}" font-family="{SERIF}" font-style="italic" font-size="11" fill="{muted}">{esc(o["lang"] or "")}</text>'
-                f'<text x="{x + 16:.1f}" y="{y + 88}" font-family="{SERIF}" font-size="15.5" fill="{ink}">{esc(name)}</text>'
-                f'<line x1="{x + 16:.1f}" y1="{y + 99}" x2="{x + cw - 16:.1f}" y2="{y + 99}" stroke="{ink}" stroke-width=".5"/>'
-                f'<line x1="{x + 16:.1f}" y1="{y + 102}" x2="{x + cw - 16:.1f}" y2="{y + 102}" stroke="{ink}" stroke-width=".3"/>'
-                + "".join(f'<text x="{x + 16:.1f}" y="{y + 124 + k * 17}" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{ink}">{esc(l)}</text>'
-                          for k, l in enumerate(lines))
-                + f'<line x1="{x + 16:.1f}" y1="{y + ch - 34}" x2="{x + cw - 16:.1f}" y2="{y + ch - 34}" stroke="{T["faint"]}" stroke-width=".6" stroke-dasharray="2 3"/>'
-                f'<text x="{x + 16:.1f}" y="{y + ch - 16}" font-family="{SERIF}" font-size="10.5" letter-spacing=".6" fill="{muted}">{esc(meta)}</text>')
-        card = (f'<rect x="{x + 4:.1f}" y="{y + 5}" width="{cw:.1f}" height="{ch}" fill="{T["faint"]}" opacity=".55"/>'
-                f'<rect x="{x:.1f}" y="{y}" width="{cw:.1f}" height="{ch}" fill="{card_bg}" stroke="{ink}" stroke-width=".8"/>'
-                f'<rect x="{x + 4:.1f}" y="{y + 4}" width="{cw - 8:.1f}" height="{ch - 8}" fill="none" stroke="{ink}" stroke-width=".3"/>'
-                + seal + text +
-                f'<circle cx="{mx:.1f}" cy="{y + 2}" r="5" fill="{acc}" stroke="{ink}" stroke-width=".6"/><circle cx="{mx - 1.5:.1f}" cy="{y + .5}" r="1.4" fill="{card_bg}" opacity=".8"/>')
-        out.append(f'<g transform="rotate({tilt:.2f} {mx:.1f} {y})">{intro("opacity", 0, 1, .2 + i * .25, .6)}{card}</g>')
+    H = 348
+    out = [head] + [pinned_card(T, i, o, 32 + i * (cw + gap), 94, cw, tilts[i]) for i, o in enumerate(own)]
     if not own:
-        out.append(f'<text x="32" y="140" font-family="{SERIF}" font-style="italic" font-size="14" fill="{muted}">List repos in data/my-repos.txt to pin them here.</text>')
+        out.append(f'<text x="32" y="140" font-family="{SERIF}" font-style="italic" font-size="14" fill="{T["muted"]}">List repos in data/my-repos.txt to pin them here.</text>')
     body = "".join(out)
     if not retro:
         body = starfield(T, random.Random(4), W, H, 30, lambda x, y: y > 80) + body
@@ -1234,7 +1259,9 @@ def readme(T, d, visitors, prefix, active):
                 strip,
                 link(merged_search, img("ledger.svg", f"{len(merged)} PRs merged across {len(projects)} projects")),
                 link(merged_search, img("orrery.svg", f"An orrery of the {len(projects)} projects that merged my pull requests")),
-                link(repos_tab, img("workshop.svg", "The workshop: my own repos")),
+                link(repos_tab, img("workshop-head.svg", "The workshop: my own projects")),
+                "".join(link(o["url"] or repos_tab, img(f"workshop-{i + 1}.svg", f'{o["name"]}: {o["about"]}', f"{100 / len(d['own']):g}%"))
+                        for i, o in enumerate(d["own"])),
                 link(merged_search, img("merged.svg", "Recently merged pull requests")),
                 link(open_search, img("open.svg", "Open pull requests and their review status")),
                 img("milestones.svg", "Milestones"),
@@ -1348,6 +1375,8 @@ def main():
         else:
             files = {"hero.svg": hero(T, d), "ledger.svg": ledger(T, d), "orrery.svg": orrery(T, d),
                      "workshop.svg": workshop(T, d),
+                     **({"workshop-head.svg": workshop(T, d, "head")} if T.get("sheet") and not T.get("folio") else {}),
+                     **({f"workshop-{i + 1}.svg": workshop(T, d, i) for i in range(len(d["own"]))} if T.get("sheet") and not T.get("folio") else {}),
                      "merged.svg": slab(T, register_arrivals(T, d)) if T.get("sheet") else merged_board(T, d),
                      "open.svg": slab(T, register_departures(T, d)) if T.get("sheet") else open_board(T, d), "milestones.svg": milestones(T, d),
                      "almanac.svg": almanac(T, d), "visitors.svg": visitors_svg(T, visitors)}
