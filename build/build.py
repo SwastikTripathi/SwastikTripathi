@@ -12,7 +12,7 @@ previewed on GitHub. Runs in .github/workflows/rebuild.yml every 6 hours, and wi
 visitor opens a "✨ Leave a star" issue. Locally: `python3 build/build.py` with the gh CLI signed in.
 Standard library only.
 """
-import base64, datetime as dt, hashlib, html, json, math, os, random, re, subprocess, sys, urllib.request
+import base64, datetime as dt, hashlib, html, json, math, os, random, re, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
 from collections import Counter
 
 ME = "SwastikTripathi"
@@ -60,10 +60,24 @@ def gh(path, **params):
     return run_gh(args)
 
 
+def public_search(q, page):
+    """Search without signing in. The Action's built-in token can only search its own repo, but public search
+    needs no token (10 requests a minute, so wait and retry when GitHub says slow down)."""
+    url = "https://api.github.com/search/issues?" + urllib.parse.urlencode({"q": q, "per_page": 100, "page": page})
+    for attempt in range(4):
+        req = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json", "User-Agent": "profile-readme-build"})
+        try:
+            return json.load(urllib.request.urlopen(req, timeout=60))
+        except urllib.error.HTTPError as e:
+            if e.code not in (403, 429) or attempt == 3:
+                raise RuntimeError(f"public search failed: {e.code}")
+            time.sleep(20 * (attempt + 1))
+
+
 def search(q):
     items, page = [], 1
     while True:
-        res = gh("search/issues", q=q, per_page=100, page=page)
+        res = public_search(q, page) if os.environ.get("SEARCH_PUBLIC") else gh("search/issues", q=q, per_page=100, page=page)
         items += res["items"]
         if len(res["items"]) < 100 or len(items) >= res["total_count"] or page == 10:
             break
@@ -98,12 +112,20 @@ def data_uri(url):
         return ""
 
 
-def review_states():
-    """GitHub's review status for each open PR, as its pull request list shows it."""
-    q = ("query($q:String!){search(query:$q,type:ISSUE,first:100){nodes{... on PullRequest{url isDraft reviewDecision}}}}")
+def review_states(prs):
+    """GitHub's review status for each open PR, as its pull request list shows it. Asked PR by PR (in one query),
+    because search through GraphQL needs more than the Action's built-in token."""
+    parts = []
+    for i, p in enumerate(prs[:100]):
+        owner, name = p["repo"].split("/")
+        number = p["url"].rstrip("/").rsplit("/", 1)[1]
+        parts.append(f'p{i}:repository(owner:{json.dumps(owner)},name:{json.dumps(name)}){{pullRequest(number:{number}){{url isDraft reviewDecision}}}}')
+    if not parts:
+        return {}
     try:
-        nodes = run_gh(["graphql", "-f", f"query={q}", "-f", f"q=author:{ME} is:pr is:open"])["data"]["search"]["nodes"]
-    except (RuntimeError, KeyError, TypeError):
+        data = run_gh(["graphql", "-f", "query={" + " ".join(parts) + "}"])["data"]
+        nodes = [v["pullRequest"] for v in data.values() if v and v.get("pullRequest")]
+    except (RuntimeError, KeyError, TypeError, AttributeError):
         return {}
     words = {"APPROVED": "APPROVED", "CHANGES_REQUESTED": "REVIEWING", "REVIEW_REQUIRED": "REVIEWING"}
     return {n["url"]: "DRAFT" if n.get("isDraft") else words.get(n.get("reviewDecision"), "OPEN") for n in nodes if n}
@@ -166,7 +188,7 @@ def collect():
         info["owner_stars"] = max(owners[info["owner"]], info["stars"])
         sep = "&" if "?" in info["avatar_url"] else "?"
         info["avatar"] = data_uri(info["avatar_url"] + sep + "s=64")
-    states = review_states()
+    states = review_states(open_)
     for p in open_:
         p["state"] = states.get(p["url"], "OPEN")
     own = own_repos()
