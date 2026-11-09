@@ -435,8 +435,10 @@ def hero(T, d):
                 f'<path d="M103 184 l5 -5 l5 5 l-5 5 z" fill="{T["accent"]}"/>'
                 f'<line x1="120" y1="184" x2="168" y2="184" stroke="{T["ink"]}" stroke-width=".8"/>'
                 f'<text x="48" y="222" font-family="{SERIF}" font-style="italic" font-size="18" fill="{T["ink"]}">'
-                f'{len(merged)} pull requests merged across {len(projects)} open-source projects.</text>'
-                f'<text x="48" y="256" font-family="{SERIF}" font-size="11" letter-spacing="2.6" fill="{T["muted"]}">'
+                f'{len(merged)} pull requests merged into {len(projects)} public repos</text>'
+                f'<text x="48" y="246" font-family="{SERIF}" font-style="italic" font-size="15" fill="{T["accent"]}">'
+                f'owned by other people. My own repos aren’t counted.</text>'
+                f'<text x="48" y="280" font-family="{SERIF}" font-size="11" letter-spacing="2.6" fill="{T["muted"]}">'
                 + f'SINCE {roman(int(since))}  ·  REVISED FROM THE GITHUB API, {NOW:%d %b %Y}'.upper() + '</text>')
         body = starfield(T, random.Random(7), W, H, 40, lambda x, y: x < 500 or math.hypot(x - cx, y - cy) < 140) + chart + left
     else:
@@ -456,11 +458,11 @@ def hero(T, d):
                 f'<text x="44" y="152" font-family="{SERIF}" font-size="58" fill="{T["ink"]}">Swastik Tripathi</text>'
                 f'<line x1="48" y1="180" x2="104" y2="180" stroke="{T["accent"]}" stroke-width="1.4"/>'
                 f'<text x="48" y="216" font-family="{SERIF}" font-style="italic" font-size="18" fill="{T["ink"]}" opacity=".88">'
-                f'{len(merged)} pull requests merged across {len(projects)} open-source projects.</text>'
+                f'{len(merged)} pull requests merged into {len(projects)} public repos owned by other people.</text>'
                 f'<text x="48" y="252" font-family="{MONO}" font-size="10.5" letter-spacing="1.6" fill="{T["faint"]}">'
                 + f'SINCE {since}  ·  REBUILT FROM THE GITHUB API  ·  {NOW:%d %b %Y}'.upper() + '</text></g>')
         body = starfield(T, random.Random(7), W, H, 80, lambda x, y: math.hypot(x - cx, y - cy) < 136) + orrery + left
-    return frame(T, W, H, body, f"Swastik Tripathi. {len(merged)} pull requests merged across {len(projects)} open-source projects.", sides="lrt")
+    return frame(T, W, H, body, f"Swastik Tripathi. {len(merged)} pull requests merged into {len(projects)} public repos owned by other people.", sides="lrt")
 
 
 # ---------------------------------------------------------------- ledger (stats + languages)
@@ -478,7 +480,9 @@ def ledger(T, d):
              (f"{streak}", "week streak")]
     x0, x1, top = 28, W - 28, 66
     cw = (x1 - x0) / len(tiles)
-    out = [heading(T, 32, 44, "The ledger" if retro else "At a glance", plate=2)]
+    out = [heading(T, 32, 44, "The ledger" if retro else "At a glance", plate=2),
+           f'<text x="{W - 32}" y="44" text-anchor="end" font-family="{SERIF}" font-style="italic" font-size="13" fill="{T["accent"]}">'
+           f'Only public repos owned by others</text>']
     for i, (num, label) in enumerate(tiles):
         x = x0 + i * cw
         if i:
@@ -1053,7 +1057,7 @@ def facade(T, d):
         f'<line x1="330" y1="270" x2="404" y2="270" stroke="{ink}" stroke-width=".8"/><path d="M412 270 l8 -6 l8 6 l-8 6 z" fill="{acc}"/>'
         f'<line x1="436" y1="270" x2="510" y2="270" stroke="{ink}" stroke-width=".8"/>'
         f'<text x="420" y="308" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="18" fill="{ink}">'
-        f'{len(merged)} pull requests merged across {len(projects)} open-source projects.</text>'
+        f'{len(merged)} pull requests merged into {len(projects)} public repos owned by other people.</text>'
         f'<text x="420" y="344" text-anchor="middle" font-family="{SERIF}" font-size="11" letter-spacing="3.4" fill="{T["muted"]}">'
         + f"SINCE {roman(since)}  ·  ANNO {roman(NOW.year)}".upper() + '</text></g>')
     return {"w": W, "h": H, "body": body, "defs": "", "label": "Swastik Tripathi"}
@@ -1308,7 +1312,7 @@ def readme(T, d, visitors, prefix, active):
             return f'<picture><source media="(prefers-color-scheme: dark)" srcset="{dark}">{tag}</picture>'
         link = lambda href, inner: f'<a href="{href}">{inner}</a>'
         strip = "".join(link(href, img(f"strip-{key}.svg", alt, f"{pct}%")) for key, href, alt, pct in STRIP(T))
-        rows = [link(SITE, img("hero.svg", f"Swastik Tripathi. {len(merged)} pull requests merged across {len(projects)} open-source projects.")),
+        rows = [link(SITE, img("hero.svg", f"Swastik Tripathi. {len(merged)} pull requests merged into {len(projects)} public repos owned by other people.")),
                 strip,
                 link(merged_search, img("ledger.svg", f"{len(merged)} PRs merged across {len(projects)} projects")),
                 link(merged_search, img("orrery.svg", f"An orrery of the {len(projects)} projects that merged my pull requests")),
@@ -1343,7 +1347,7 @@ def readme(T, d, visitors, prefix, active):
 <a href="{merged_search}"><img src="{a('almanac.svg')}" width="100%" alt="Merged pull requests per week"></a>
 
 <a href="{issue}"><img src="{a('visitors.svg')}" width="100%" alt="Visitors' constellation: every star is someone who stopped by"></a>"""
-    top = "" if T.get("folio") or T.get("sheet") else f"""<a href="{SITE}"><img src="{a('hero.svg')}" width="100%" alt="Swastik Tripathi. {len(merged)} pull requests merged across {len(projects)} open-source projects."></a>
+    top = "" if T.get("folio") or T.get("sheet") else f"""<a href="{SITE}"><img src="{a('hero.svg')}" width="100%" alt="Swastik Tripathi. {len(merged)} pull requests merged into {len(projects)} public repos owned by other people."></a>
 
 """
     star_badge = f'https://img.shields.io/badge/Leave_a_star-{T["accent"].lstrip("#")}?style=flat-square&logo=githubsponsors&logoColor=white'
