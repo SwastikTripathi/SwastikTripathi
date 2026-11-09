@@ -1,4 +1,5 @@
-# Your own repos for the orrery's inner ring, one per line (max 5). Swap freely.
+# Your own repos for the Workshop plate, one per line (up to 4). Optional note after a "|"
+# replaces the GitHub description, e.g.:  gita-ai | Ask the Bhagavad Gita a question.
 cute-whiplash
 gita-ai
 thera-ai

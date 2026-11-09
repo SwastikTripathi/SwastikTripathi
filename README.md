@@ -3,6 +3,7 @@
 <a href="https://swastiktripathi.dev"><img src="assets/retro/strip-web.svg" width="27%" align="top" alt="swastiktripathi.dev"></a><a href="https://www.linkedin.com/in/swastik-tripathi/"><img src="assets/retro/strip-linkedin.svg" width="25%" align="top" alt="LinkedIn"></a><a href="https://x.com/SwastikT_space"><img src="assets/retro/strip-x.svg" width="24%" align="top" alt="X"></a><a href="https://github.com/SwastikTripathi"><img src="assets/retro/strip-github.svg" width="24%" align="top" alt="GitHub"></a><br>
 <a href="https://github.com/search?q=author%3ASwastikTripathi+is%3Apr+is%3Amerged+-user%3ASwastikTripathi&type=pullrequests"><img src="assets/retro/ledger.svg" width="100%" align="top" alt="143 PRs merged across 17 projects"></a><br>
 <a href="https://github.com/search?q=author%3ASwastikTripathi+is%3Apr+is%3Amerged+-user%3ASwastikTripathi&type=pullrequests"><img src="assets/retro/orrery.svg" width="100%" align="top" alt="An orrery of the 17 projects that merged my pull requests"></a><br>
+<a href="https://github.com/SwastikTripathi?tab=repositories"><img src="assets/retro/workshop.svg" width="100%" align="top" alt="The workshop: my own repos"></a><br>
 <a href="https://github.com/search?q=author%3ASwastikTripathi+is%3Apr+is%3Amerged+-user%3ASwastikTripathi&type=pullrequests"><img src="assets/retro/merged.svg" width="100%" align="top" alt="Recently merged pull requests"></a><br>
 <a href="https://github.com/search?q=author%3ASwastikTripathi+is%3Apr+is%3Aopen+-user%3ASwastikTripathi&type=pullrequests"><img src="assets/retro/open.svg" width="100%" align="top" alt="Open pull requests and their review status"></a><br>
 <img src="assets/retro/milestones.svg" width="100%" align="top" alt="Milestones"><br>
@@ -42,4 +43,4 @@
 <p align="center"><sub>Leave a star: click the constellation above, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
 
 
-<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="build/build.py">build/build.py</a> · last run Nov 9, 2026, 15:56 UTC · also in the <a href="alt/README-classy.md">classy</a> and <a href="alt/README-paper.md">paper</a> editions</sub></p>
+<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="build/build.py">build/build.py</a> · last run Nov 9, 2026, 16:06 UTC · also in the <a href="alt/README-classy.md">classy</a> and <a href="alt/README-paper.md">paper</a> editions</sub></p>

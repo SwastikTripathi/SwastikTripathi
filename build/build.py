@@ -137,15 +137,17 @@ def collect():
     own = []
     try:
         names = [l.strip() for l in open(os.path.join(DATA, "my-repos.txt")) if l.strip() and not l.startswith("#")]
+        names = [tuple(x.strip() for x in (l.split("|", 1) + [""])[:2]) for l in names]
     except OSError:
         names = []
-    for name in names[:5]:
+    for name, note in names[:4]:
         try:
             info = gh(f"repos/{ME}/{name}")
         except RuntimeError:
             continue
         if not info.get("private"):
-            own.append({"name": info["name"], "url": info["html_url"], "lang": info.get("language") or "", "stars": info["stargazers_count"]})
+            own.append({"name": info["name"], "url": info["html_url"], "lang": info.get("language") or "", "stars": info["stargazers_count"],
+                        "about": note or info.get("description") or "", "pushed": info.get("pushed_at") or info["created_at"]})
     me = gh(f"users/{ME}")
     return {"merged": sorted(merged, key=lambda p: p["when"], reverse=True), "unmerged": unmerged,
             "open": [p for p in open_ if p["repo"] in repos], "repos": repos,
@@ -453,7 +455,7 @@ def orrery(T, d):
     merged, repos = d["merged"], d["repos"]
     counts = Counter(p["repo"] for p in merged)
     order = sorted(counts, key=lambda r: (-counts[r], -repos[r]["stars"]))
-    radii, durs = ([212, 262, 310] if paper else [168, 240, 304]), [240, 240, 240]
+    radii, durs = ([138, 224, 306] if paper else [122, 207, 292]), [240, 240, 240]
     n = len(order)
     sizes = [max(1, round(n * r / sum(radii))) for r in radii[:2]]
     rings = [order[:sizes[0]], order[sizes[0]:sizes[0] + sizes[1]], order[sizes[0] + sizes[1]:]]
@@ -462,40 +464,18 @@ def orrery(T, d):
     pid = 0
     dash = ' stroke-dasharray="1 4"' if retro else ""
     italic = 'font-style="italic" ' if retro else ""
-    # Everything turns together (rings, ellipse, my repos), so the layout is fixed and can be planned once.
     size = lambda slug: min(28, max(9, 9 + (.55 * math.log10(max(repos[slug]["stars"], 500))
                                          + .45 * math.log10(max(repos[slug]["owner_stars"], 500)) - 3.05) * 9))
-    ERX, ERY, TILT = 330, 122, -21
-    own = d.get("own", [])
-    ell = paper and own
-    a0 = rng.uniform(0, 360)
-    ang = {}
-    if ell:
-        # projects stay outside the ellipse: on each ring only angles where the ellipse is well inside the ring,
-        # picked greedily to keep every planet (and the label under it) as far as possible from the others
-        def ell_r(deg):
-            f = math.radians(deg - TILT)
-            return ERX * ERY / math.hypot(ERY * math.cos(f), ERX * math.sin(f))
-        placed = []
-        for R, members in zip(radii, rings):
-            for slug in members:
-                rb = size(slug)
-                ok = [a for a in range(360) if ell_r(a) < R - rb - 44] or list(range(360))
-                spot = lambda a: (R * math.cos(math.radians(a)), R * math.sin(math.radians(a)) + 16)
-                best = max(ok, key=lambda a: min((math.dist(spot(a), q) for q in placed), default=0) + (a % 7) * 1e-3)
-                ang[slug] = best
-                placed.append(spot(best))
-    else:
-        # every project gets its own angle, alternating rings
-        queues = [list(m) for m in rings]
-        while any(queues):
-            for q in queues:
-                if q:
-                    ang[q.pop(0)] = a0 + len(ang) * 360 / n
+    # every project gets its own angle, alternating rings, and all rings turn together: no two planets ever meet
+    a0, ang, queues = rng.uniform(0, 360), {}, [list(m) for m in rings]
+    while any(queues):
+        for q in queues:
+            if q:
+                ang[q.pop(0)] = a0 + len(ang) * 360 / n
     for k, (R, members, dur) in enumerate(zip(radii, rings, durs)):
         if not members:
             continue
-        orbits.append("" if ell else f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" stroke="{T["ink"] if retro else T["rule"]}" '
+        orbits.append(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" stroke="{T["ink"] if retro else T["rule"]}" '
                       f'stroke-width="{.6 if retro else 1}"{dash}/>')
         g = [f'<g>{spin(cx, cy, dur)}']
         for j, slug in enumerate(members):
@@ -521,34 +501,6 @@ def orrery(T, d):
             pid += 1
         g.append('</g>')
         bodies.append("".join(g))
-    EDUR = durs[0]
-    if own:
-        g = [f'<g>{spin(cx, cy, EDUR)}']
-        if paper:  # the ecliptic: a wide ellipse that turns with the sky, my repos inside it
-            g.append(f'<ellipse cx="{cx}" cy="{cy}" rx="{ERX}" ry="{ERY}" transform="rotate({TILT} {cx} {cy})" fill="none" '
-                     f'stroke="{T["accent"]}" stroke-width="1.1" stroke-dasharray="6 4"/>')
-        else:
-            g.append(f'<circle cx="{cx}" cy="{cy}" r="100" fill="none" stroke="{T["accent"]}" stroke-width=".7" stroke-dasharray="2 3"/>')
-        half = (len(own) + 1) // 2
-        for j, o in enumerate(own):
-            t = math.radians(45 + j * 360 / len(own))
-            if paper:  # along the long axis, either side of the sun, a little above it so the label fits inside
-                side, k = (-1, j) if j < half else (1, j - half)
-                cnt = half if side < 0 else len(own) - half
-                ex = side * ((110 + k * 140 / (cnt - 1)) if cnt > 1 else 170)
-                ey, tr = -20, math.radians(TILT)
-                px, py = cx + ex * math.cos(tr) - ey * math.sin(tr), cy + ex * math.sin(tr) + ey * math.cos(tr)
-            else:
-                px, py = cx + 100 * math.cos(t), cy + 100 * math.sin(t)
-            label = o["name"] if len(o["name"]) <= 18 else o["name"][:17] + "…"
-            g.append(f'<g transform="translate({px:.1f} {py:.1f})"><g>{spin(0, 0, EDUR, reverse=True)}'
-                     f'<circle r="21" fill="none" stroke="{T["accent"]}" stroke-width=".5"/>'
-                     f'<circle r="17" fill="{T["accent"]}"/><circle r="14.5" fill="none" stroke="{T["bg"]}" stroke-width=".6"/>'
-                     f'<text y="6.5" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="19" fill="{T["bg"]}">{esc(o["name"][0].upper())}</text>'
-                     f'<text y="39" text-anchor="middle" font-family="{SERIF}" font-size="13" fill="{T["ink"]}">{esc(label)}</text>'
-                     f'<text y="52" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="10.5" fill="{T["muted"]}">{esc(o["lang"] or "my repo")}</text></g></g>')
-        g.append('</g>')
-        bodies.insert(0, "".join(g))
     if retro:
         rays = "".join(f'<line x1="{cx + 44 * math.cos(math.radians(a)):.1f}" y1="{cy + 44 * math.sin(math.radians(a)):.1f}" '
                        f'x2="{cx + (58 if a % 30 == 0 else 51) * math.cos(math.radians(a)):.1f}" y2="{cy + (58 if a % 30 == 0 else 51) * math.sin(math.radians(a)):.1f}" '
@@ -574,9 +526,8 @@ def orrery(T, d):
     body = (starfield(T, random.Random(5), W, H, 150 if not retro else 90, lambda x, y: math.hypot(x - cx, y - cy) < 60) +
             outer + "".join(orbits) + sun + "".join(bodies) +
             heading(T, 32, 44, "An orrery of merged work" if retro else "The orrery", "Every body is a project that merged my work.", plate=3) +
-            (f'<text x="32" y="{86 if retro else 84}" font-family="{SERIF}" font-style="italic" font-size="13" fill="{T["accent"]}">{"Inside the red ellipse: my own repos." if paper else "The inner ring is my own."}</text>' if own else "") +
             f'<text x="{W - 32}" y="44" text-anchor="end" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{T["muted"]}">size: the project’s and its organization’s stars</text>'
-            f'<text x="{W - 32}" y="62" text-anchor="end" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{T["muted"]}">closer in: more merges</text>')
+            f'<text x="{W - 32}" y="62" text-anchor="end" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{T["muted"]}">inner orbits: more merges</text>')
     defs = "".join(clips) + f'<clipPath id="me"><circle cx="{cx}" cy="{cy}" r="36"/></clipPath>'
     return frame(T, W, H, body, f"An orrery of the {len(counts)} open-source projects that merged Swastik's pull requests", defs)
 
@@ -622,7 +573,7 @@ def almanac(T, d):
             last_month = s.month
     total = sum(counts)
     body = (heading(T, 32, 44, "Almanac of merges, by week" if retro else "Merged, week by week",
-                    f"{total} in the last {weeks} weeks. The best week had {max(counts)}.", plate=7) +
+                    f"{total} in the last {weeks} weeks. The best week had {max(counts)}.", plate=8) +
             f'<line x1="{x0}" y1="{base + .5}" x2="{x1}" y2="{base + .5}" stroke="{T["ink"] if retro else T["rule"]}" stroke-width="{.8 if retro else 1}"/>'
             + "".join(out))
     return frame(T, W, H, body, f"{total} merged pull requests in the last {weeks} weeks")
@@ -705,7 +656,7 @@ def merged_board(T, d):
     rows = [(dt.datetime.fromisoformat(p["when"].replace("Z", "+00:00")).strftime("%b %d"),
              short(d["repos"][p["repo"]]["name"]), headline(p["title"]), "MERGED")
             for p in d["merged"][:7]]
-    return board(T, rows, "Recently merged", "The latest of my pull requests merged into other projects.", 4,
+    return board(T, rows, "Recently merged", "The latest of my pull requests merged into other projects.", 5,
                  {"MERGED": T["accent"]}, [("merged", 6), ("project", 16), ("pull request", 29), ("status", 6)])
 
 
@@ -722,8 +673,77 @@ def open_board(T, d):
     rows = [(dt.datetime.fromisoformat(p["created"].replace("Z", "+00:00")).strftime("%b %d"), short(d["repos"][p["repo"]]["name"]),
              headline(p["title"]), p.get("state", "OPEN")) for p in review_queue(d)]
     return board(T, rows or [("", "", "NONE OPEN RIGHT NOW", "")], "Open pull requests",
-                 "Waiting on maintainers, with the review status GitHub shows.", 5, state_colors(T),
+                 "Waiting on maintainers, with the review status GitHub shows.", 6, state_colors(T),
                  [("opened", 6), ("project", 16), ("pull request", 26), ("review", 9)])
+
+
+# ---------------------------------------------------------------- the workshop
+
+def wrap(text, width, lines):
+    out, cur = [], ""
+    for w in text.split():
+        if len(cur) + len(w) + 1 > width:
+            out.append(cur)
+            cur = w
+        else:
+            cur = (cur + " " + w).strip()
+    out.append(cur)
+    out = [l for l in out if l]
+    if len(out) > lines:
+        out = out[:lines]
+        out[-1] = out[-1][:width - 1].rstrip(" ,.;:") + "…"
+    return out
+
+
+def workshop(T, d):
+    """My own repos as specimen cards pinned to a board, each with a wax seal, catalogue number and notes."""
+    own = d.get("own", [])
+    W, H = 840, 348
+    retro = T.get("print")
+    ink, acc, muted = T["ink"], T["accent"], T["muted"]
+    card_bg = "#f8f2e4" if retro else "#141415"
+    n = max(len(own), 1)
+    gap = 22
+    cw = (W - 64 - gap * (n - 1)) / n
+    ch = 222
+    rng = random.Random(len(own) * 13 + 5)
+    out = [heading(T, 32, 44, "The workshop" if retro else "Workshop", "Things I make on my own, between pull requests.", plate=4)]
+    for i, o in enumerate(own):
+        x, y = 32 + i * (cw + gap), 94
+        tilt = rng.uniform(-1.8, 1.8)
+        mx = x + cw / 2
+        when = dt.datetime.fromisoformat(o["pushed"].replace("Z", "+00:00"))
+        about = re.sub(r"\s*[—–]\s*", ", ", o["about"]) or f"A personal {o['lang'] or 'side'} project."
+        chars = int((cw - 32) / 5.3)
+        lines = wrap(about, chars, 3)
+        name = o["name"] if len(o["name"]) * 8 < cw - 30 else o["name"][:int((cw - 38) / 8)] + "…"
+        meta = "  ·  ".join(t for t in [f"touched {when:%b %Y}", f"★ {o['stars']}" if o["stars"] else ""] if t)
+        seal = (f'<g transform="translate({x + 34:.1f} {y + 40})">'
+                f'<g><animateTransform attributeName="transform" type="rotate" values="0;{6 if i % 2 else -6};0" dur="{7 + i}s" repeatCount="indefinite"/>'
+                + "".join(f'<circle cx="{19 * math.cos(math.radians(a)):.1f}" cy="{19 * math.sin(math.radians(a)):.1f}" r="3.2" fill="{acc}"/>' for a in range(0, 360, 30))
+                + f'<circle r="19" fill="{acc}"/><circle r="14.5" fill="none" stroke="{T["bg"] if retro else "#0c0c0d"}" stroke-width=".7"/>'
+                f'<text y="7" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="20" fill="{card_bg}">{esc(o["name"][0].upper())}</text></g></g>')
+        text = (f'<text x="{x + 64:.1f}" y="{y + 36}" font-family="{SERIF}" font-size="10" letter-spacing="2" fill="{muted}">No. {roman(i + 1)}</text>'
+                f'<text x="{x + 64:.1f}" y="{y + 52}" font-family="{SERIF}" font-style="italic" font-size="11" fill="{muted}">{esc(o["lang"] or "")}</text>'
+                f'<text x="{x + 16:.1f}" y="{y + 88}" font-family="{SERIF}" font-size="15.5" fill="{ink}">{esc(name)}</text>'
+                f'<line x1="{x + 16:.1f}" y1="{y + 99}" x2="{x + cw - 16:.1f}" y2="{y + 99}" stroke="{ink}" stroke-width=".5"/>'
+                f'<line x1="{x + 16:.1f}" y1="{y + 102}" x2="{x + cw - 16:.1f}" y2="{y + 102}" stroke="{ink}" stroke-width=".3"/>'
+                + "".join(f'<text x="{x + 16:.1f}" y="{y + 124 + k * 17}" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{ink}">{esc(l)}</text>'
+                          for k, l in enumerate(lines))
+                + f'<line x1="{x + 16:.1f}" y1="{y + ch - 34}" x2="{x + cw - 16:.1f}" y2="{y + ch - 34}" stroke="{T["faint"]}" stroke-width=".6" stroke-dasharray="2 3"/>'
+                f'<text x="{x + 16:.1f}" y="{y + ch - 16}" font-family="{SERIF}" font-size="10.5" letter-spacing=".6" fill="{muted}">{esc(meta)}</text>')
+        card = (f'<rect x="{x + 4:.1f}" y="{y + 5}" width="{cw:.1f}" height="{ch}" fill="{T["faint"]}" opacity=".55"/>'
+                f'<rect x="{x:.1f}" y="{y}" width="{cw:.1f}" height="{ch}" fill="{card_bg}" stroke="{ink}" stroke-width=".8"/>'
+                f'<rect x="{x + 4:.1f}" y="{y + 4}" width="{cw - 8:.1f}" height="{ch - 8}" fill="none" stroke="{ink}" stroke-width=".3"/>'
+                + seal + text +
+                f'<circle cx="{mx:.1f}" cy="{y + 2}" r="5" fill="{acc}" stroke="{ink}" stroke-width=".6"/><circle cx="{mx - 1.5:.1f}" cy="{y + .5}" r="1.4" fill="{card_bg}" opacity=".8"/>')
+        out.append(f'<g transform="rotate({tilt:.2f} {mx:.1f} {y})">{intro("opacity", 0, 1, .2 + i * .25, .6)}{card}</g>')
+    if not own:
+        out.append(f'<text x="32" y="140" font-family="{SERIF}" font-style="italic" font-size="14" fill="{muted}">List repos in data/my-repos.txt to pin them here.</text>')
+    body = "".join(out)
+    if not retro:
+        body = starfield(T, random.Random(4), W, H, 30, lambda x, y: y > 80) + body
+    return frame(T, W, H, body, "The workshop: " + ", ".join(o["name"] for o in own))
 
 
 # ---------------------------------------------------------------- milestones
@@ -748,7 +768,7 @@ def milestones(T, d):
     medals += [("Largest project", kstars(repos[largest]["stars"]) + "★", name(largest), f"largest project · {name(largest)}"),
                ("Most merged", str(home_n), name(home), f"most merged · {name(home)}"),
                ("Best week", str(best_n), f"week of {best_week:%b %-d}", f"best week · {best_n} merged")]
-    out, defs = [heading(T, 32, 44, "Milestones", "", plate=6)], []
+    out, defs = [heading(T, 32, 44, "Milestones", "", plate=7)], []
     step = (W - 64) / len(medals)
     for i, (label, big_text, small, ring) in enumerate(medals):
         cx, cy, R = 32 + step * (i + .5), 146, 58
@@ -861,7 +881,7 @@ def visitors_svg(T, visitors):
             f'stroke-width=".8" stroke-dasharray="3 4"><animate attributeName="stroke-dashoffset" from="0" to="-70" dur="8s" repeatCount="indefinite"/></path>'
             if len(pts) > 1 else "")
     body = (starfield(T, random.Random(17), W, H, 110 if not retro else 50) + grid + line + "".join(stars) +
-            heading(T, 32, 44, "Constellation of visitors" if retro else "Visitors", sub, plate=8))
+            heading(T, 32, 44, "Constellation of visitors" if retro else "Visitors", sub, plate=9))
     if T.get("sheet"):  # the sheet has no badge below it, so the plate carries its own button (the whole plate is the link)
         ink, acc = T["ink"], T["accent"]
         body += (f'<g><rect x="636" y="26" width="172" height="34" fill="{T["bg"]}" stroke="{acc}" stroke-width="1.5"/>'
@@ -1014,14 +1034,14 @@ def register(T, rows, title, sub, plate, stamps):
 def register_arrivals(T, d):
     rows = [(dt.datetime.fromisoformat(p["when"].replace("Z", "+00:00")).strftime("%-d %b"),
              short(d["repos"][p["repo"]]["name"]), headline(p["title"]), "MERGED") for p in d["merged"][:7]]
-    return register(T, rows, "Register of merged pull requests", "The latest merged into other projects.", 4, {})
+    return register(T, rows, "Register of merged pull requests", "The latest merged into other projects.", 5, {})
 
 
 def register_departures(T, d):
     rows = [(dt.datetime.fromisoformat(p["created"].replace("Z", "+00:00")).strftime("%-d %b"), short(d["repos"][p["repo"]]["name"]),
              headline(p["title"]), p.get("state", "OPEN")) for p in review_queue(d)]
     return register(T, rows or [("", "", "None open right now.", "")], "Register of open pull requests",
-                    "Waiting on maintainers, with the review status GitHub shows.", 5, state_colors(T))
+                    "Waiting on maintainers, with the review status GitHub shows.", 6, state_colors(T))
 
 
 def visitors_chart(T, visitors):
@@ -1053,7 +1073,7 @@ def visitors_chart(T, visitors):
     figure = (f'<polyline points="{" ".join(f"{x:.1f},{y:.1f}" for x, y in pts)}" fill="none" stroke="{ink}" stroke-width=".8"/>' if len(pts) > 1 else "")
     n = len(visitors) - 1
     sub = f"{n} visitor{'s have' if n != 1 else ' has'} left a star. Leave yours, with a note." if n > 0 else "No visitors yet. Leave the first star, and a note."
-    body = (heading(T, 32, 44, "The visitors’ constellation", sub, plate=8) +
+    body = (heading(T, 32, 44, "Constellation of visitors", sub, plate=9) +
             f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" stroke="{ink}" stroke-width="2"/>'
             f'<circle cx="{cx}" cy="{cy}" r="{R - 14}" fill="none" stroke="{ink}" stroke-width=".7"/>' + ticks(T, cx, cy, R, 5, 15, 5, 13, width=.9) +
             "".join(f'<text x="{cx + (R + 18) * math.cos(math.radians(a - 90)):.1f}" y="{cy + (R + 18) * math.sin(math.radians(a - 90)) + 4.5:.1f}" '
@@ -1104,7 +1124,7 @@ def fleuron(T):
 
 
 def folio(T, d, visitors):
-    parts = [facade(T, d), fleuron(T), ledger_book(T, d), fleuron(T), orrery(T, d), fleuron(T),
+    parts = [facade(T, d), fleuron(T), ledger_book(T, d), fleuron(T), orrery(T, d), fleuron(T), workshop(T, d), fleuron(T),
              register_arrivals(T, d), register_departures(T, d), fleuron(T), milestones(T, d), almanac(T, d),
              fleuron(T), visitors_chart(T, visitors), colophon(T)]
     W, y, top = 840, 30, 30
@@ -1143,6 +1163,7 @@ def readme(T, d, visitors, prefix, active):
     issue = (f"https://github.com/{ME}/{ME}/issues/new?title=%E2%9C%A8+Leave+a+star&body="
              + urllib.request.quote(PREFILL + "\n\n"))
     merged_search = f"https://github.com/search?q=author%3A{ME}+is%3Apr+is%3Amerged+-user%3A{ME}&type=pullrequests"
+    repos_tab = f"https://github.com/{ME}?tab=repositories"
     open_search = f"https://github.com/search?q=author%3A{ME}+is%3Apr+is%3Aopen+-user%3A{ME}&type=pullrequests"
     av = lambda slug, s=40: f"https://github.com/{repos[slug]['owner']}.png?size={s}"
     day = lambda iso: dt.datetime.fromisoformat(iso.replace("Z", "+00:00")).strftime("%b %-d")
@@ -1186,6 +1207,7 @@ def readme(T, d, visitors, prefix, active):
                 strip,
                 link(merged_search, img("ledger.svg", f"{len(merged)} PRs merged across {len(projects)} projects")),
                 link(merged_search, img("orrery.svg", f"An orrery of the {len(projects)} projects that merged my pull requests")),
+                link(repos_tab, img("workshop.svg", "The workshop: my own repos")),
                 link(merged_search, img("merged.svg", "Recently merged pull requests")),
                 link(open_search, img("open.svg", "Open pull requests and their review status")),
                 img("milestones.svg", "Milestones"),
@@ -1200,6 +1222,8 @@ def readme(T, d, visitors, prefix, active):
         sections = f"""<a href="{merged_search}"><img src="{a('ledger.svg')}" width="100%" alt="{len(merged)} PRs merged across {len(projects)} projects"></a>
 
 <a href="{merged_search}"><img src="{a('orrery.svg')}" width="100%" alt="An orrery of the {len(projects)} projects that merged my pull requests"></a>
+
+<a href="{repos_tab}"><img src="{a('workshop.svg')}" width="100%" alt="The workshop: my own repos"></a>
 
 <a href="{merged_search}"><img src="{a('merged.svg')}" width="100%" alt="Recently merged pull requests"></a>
 
@@ -1296,6 +1320,7 @@ def main():
             files = {"folio.svg": folio(T, d, visitors)}
         else:
             files = {"hero.svg": hero(T, d), "ledger.svg": ledger(T, d), "orrery.svg": orrery(T, d),
+                     "workshop.svg": workshop(T, d),
                      "merged.svg": slab(T, register_arrivals(T, d)) if T.get("sheet") else merged_board(T, d),
                      "open.svg": slab(T, register_departures(T, d)) if T.get("sheet") else open_board(T, d), "milestones.svg": milestones(T, d),
                      "almanac.svg": almanac(T, d), "visitors.svg": visitors_svg(T, visitors)}
