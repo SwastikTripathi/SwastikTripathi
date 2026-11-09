@@ -1363,7 +1363,7 @@ def readme(T, d, visitors, prefix, active):
 {button}<sub>{how}, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
 
 {notes_md}
-<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="{prefix}build/build.py">build/build.py</a> · last run {NOW:%b %-d, %Y, %H:%M} UTC · also in the {editions} editions</sub></p>
+<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="{prefix}build/build.py">build/build.py</a> · last rebuilt {NOW:%b %-d, %Y} · also in the {editions} editions</sub></p>
 """
 
 
