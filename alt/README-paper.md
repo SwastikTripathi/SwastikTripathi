@@ -7,7 +7,7 @@
 <summary><b>Open the boards</b>: every pull request above, with links</summary>
 <br>
 
-**Arrivals**
+**Recently merged**
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
@@ -19,17 +19,17 @@
 | <img src="https://github.com/un-ts.png?size=40" width="18" height="18"> | un-ts/eslint-plugin-import-x | [fix(core): don't load the optional @typescript-eslint/utils peer at runtime](https://github.com/un-ts/eslint-plugin-import-x/pull/599) | Nov 8 |
 | <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Don't leave an empty comment line for an over-indented `*/` in `blockComments`](https://github.com/nicklockwood/SwiftFormat/pull/2888) | Nov 8 |
 
-**Departures**
+**Open pull requests**
 
-| | Project | Pull request | Opened |
-|:-:|---|---|---|
-| <img src="https://github.com/excalidraw.png?size=40" width="18" height="18"> | excalidraw/excalidraw | [fix(editor): don't snap dragged frames to their children's old positions](https://github.com/excalidraw/excalidraw/pull/12166) | Sep 25 |
-| <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(xychart): label each bar series with its own values when showDataLabel is true](https://github.com/mermaid-js/mermaid/pull/8521) | Oct 23 |
-| <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(commonDb): decode HTML entities in title and accessibility text](https://github.com/mermaid-js/mermaid/pull/8560) | Oct 26 |
-| <img src="https://github.com/slidevjs.png?size=40" width="18" height="18"> | slidevjs/slidev | [docs: add Cloudflare Workers to the hosting guide](https://github.com/slidevjs/slidev/pull/2830) | Nov 9 |
-| <img src="https://github.com/iina.png?size=40" width="18" height="18"> | iina/iina | [SettingsWindow: enforce a minimum content size](https://github.com/iina/iina/pull/6532) | Oct 18 |
-| <img src="https://github.com/iina.png?size=40" width="18" height="18"> | iina/iina | [fix: guard plugin mpv API calls against post-shutdown player state](https://github.com/iina/iina/pull/6559) | Oct 24 |
-| <img src="https://github.com/jestjs.png?size=40" width="18" height="18"> | jestjs/jest | [fix(expect): include iterableEquality in ArrayContaining, ArrayOf, ObjectContaining](https://github.com/jestjs/jest/pull/16512) | Oct 20 |
+| | Project | Pull request | Opened | Review |
+|:-:|---|---|---|---|
+| <img src="https://github.com/excalidraw.png?size=40" width="18" height="18"> | excalidraw/excalidraw | [fix(editor): don't snap dragged frames to their children's old positions](https://github.com/excalidraw/excalidraw/pull/12166) | Sep 25 | Review required |
+| <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(xychart): label each bar series with its own values when showDataLabel is true](https://github.com/mermaid-js/mermaid/pull/8521) | Oct 23 | Approved |
+| <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(commonDb): decode HTML entities in title and accessibility text](https://github.com/mermaid-js/mermaid/pull/8560) | Oct 26 | Approved |
+| <img src="https://github.com/slidevjs.png?size=40" width="18" height="18"> | slidevjs/slidev | [docs: add Cloudflare Workers to the hosting guide](https://github.com/slidevjs/slidev/pull/2830) | Nov 9 | Open |
+| <img src="https://github.com/iina.png?size=40" width="18" height="18"> | iina/iina | [SettingsWindow: enforce a minimum content size](https://github.com/iina/iina/pull/6532) | Oct 18 | Open |
+| <img src="https://github.com/iina.png?size=40" width="18" height="18"> | iina/iina | [fix: guard plugin mpv API calls against post-shutdown player state](https://github.com/iina/iina/pull/6559) | Oct 24 | Changes requested |
+| <img src="https://github.com/jestjs.png?size=40" width="18" height="18"> | jestjs/jest | [fix(expect): include iterableEquality in ArrayContaining, ArrayOf, ObjectContaining](https://github.com/jestjs/jest/pull/16512) | Oct 20 | Open |
 
 </details>
 
@@ -37,4 +37,4 @@
 <sub>Click, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
 
 
-<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last run Nov 9, 2026, 13:43 UTC · also in the <a href="../README.md">classy</a> and <a href="../alt/README-retro.md">retro</a> editions</sub></p>
+<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last run Nov 9, 2026, 15:21 UTC · also in the <a href="../alt/README-classy.md">classy</a> and <a href="../README.md">retro</a> editions</sub></p>

@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Rebuilds this profile's README.md and its SVGs from the GitHub API, in two editions.
+"""Rebuilds this profile's README.md and its SVGs from the GitHub API, in three editions.
 
-  classy  near-black, serif type, hairline rules, one brass accent       -> README.md when data/theme.txt says classy
-  retro   cream paper, a star-atlas plate: double rules, hatching, vermilion
+  classy  near-black, serif type, hairline rules, one brass accent
+  retro   cream paper, star-atlas plates: double rules, hatching, vermilion. Its SVGs are slices of one sheet
+          (side rules only, top rule on the hero, bottom rule on the visitors), stacked with align="top" and <br>
+          inside a single <p> so no page background shows between them, and each slice keeps its own link.
+  paper   the whole profile as one engraved folio SVG
 
 The active edition (data/theme.txt) becomes README.md; the other is written to alt/README-<name>.md so it can be
 previewed on GitHub. Runs in .github/workflows/rebuild.yml every 6 hours, and with `--add-star <login>` when a
@@ -34,7 +37,7 @@ THEMES = {
     "retro": dict(name="retro", bg="#f2ead8", rule="#1f1b16", ink="#1f1b16", muted="#6e6556", faint="#c9bc9c",
                   accent="#b4412c", accent2="#2d4a6b", logo="sepia", labelfont=SERIF, numfont=SERIF,
                   shades=["#1f1b16", "#b4412c", "#2d4a6b", "#8a7f6b", "#c9bc9c", "#5a5246"],
-                  badge="f2ead8", badge_logo="1f1b16", print=True),
+                  badge="f2ead8", badge_logo="1f1b16", print=True, sheet=True),
 }
 # paper: the whole profile as one continuous engraved folio (Swastik liked the retro star chart)
 THEMES["paper"] = dict(THEMES["retro"], name="paper", bg="#efe6d0", folio=True)
@@ -95,6 +98,17 @@ def data_uri(url):
         return ""
 
 
+def review_states():
+    """GitHub's review status for each open PR, as its pull request list shows it."""
+    q = ("query($q:String!){search(query:$q,type:ISSUE,first:100){nodes{... on PullRequest{url isDraft reviewDecision}}}}")
+    try:
+        nodes = run_gh(["graphql", "-f", f"query={q}", "-f", f"q=author:{ME} is:pr is:open"])["data"]["search"]["nodes"]
+    except (RuntimeError, KeyError, TypeError):
+        return {}
+    words = {"APPROVED": "APPROVED", "CHANGES_REQUESTED": "CHANGES REQUESTED", "REVIEW_REQUIRED": "REVIEW REQUIRED"}
+    return {n["url"]: "DRAFT" if n.get("isDraft") else words.get(n.get("reviewDecision"), "OPEN") for n in nodes if n}
+
+
 def collect():
     merged = search(f"author:{ME} is:pr is:merged")
     unmerged = search(f"author:{ME} is:pr is:closed is:unmerged")
@@ -117,6 +131,9 @@ def collect():
         info["owner_stars"] = max(owners[info["owner"]], info["stars"])
         sep = "&" if "?" in info["avatar_url"] else "?"
         info["avatar"] = data_uri(info["avatar_url"] + sep + "s=64")
+    states = review_states()
+    for p in open_:
+        p["state"] = states.get(p["url"], "OPEN")
     me = gh(f"users/{ME}")
     return {"merged": sorted(merged, key=lambda p: p["when"], reverse=True), "unmerged": unmerged,
             "open": [p for p in open_ if p["repo"] in repos], "repos": repos,
@@ -216,17 +233,37 @@ def defs_common(T):
             + hatch("hatch", T["ink"]) + hatch("hatchA", T["accent"]))
 
 
-def frame(T, w, h, body, label, defs=""):
+def sheet_rules(T, w, h, sides):
+    """Rules on all four edges of a sheet slice. Where two slices meet, the browser blends each image's fractional
+    edge with the page background, which shows as a hairline; a band of ink on the join hides it. So each edge
+    carries ink right up to the image's edge, heavier on the sheet's outside (sides: l, r, t, b), plus a thin
+    rule just inside. Two slices together print as thin, thick, thin."""
+    ink, out = T["ink"], []
+    for side in "lrtb":
+        k = 2.4 if side in sides else 1.2
+        out.append({"l": f'<rect x="0" y="0" width="{k}" height="{h}"/>', "r": f'<rect x="{w - k}" y="0" width="{k}" height="{h}"/>',
+                    "t": f'<rect x="0" y="0" width="{w}" height="{k}"/>', "b": f'<rect x="0" y="{h - k}" width="{w}" height="{k}"/>'}[side])
+    return (f'<g fill="{ink}">{"".join(out)}</g>'
+            f'<rect x="5" y="5" width="{w - 10}" height="{h - 10}" fill="none" stroke="{ink}" stroke-width=".5"/>')
+
+
+def frame(T, w, h, body, label, defs="", sides="lr"):
     if T.get("folio"):  # stacked into one sheet by folio()
         return {"w": w, "h": h, "body": body, "defs": defs, "label": label}
     retro = T.get("print")
-    rx = 4 if retro else 16
-    rules = (f'<rect width="{w}" height="{h}" filter="url(#paper)" opacity=".9"/>'
+    rx = 0 if T.get("sheet") else 4 if retro else 16
+    if T.get("sheet"):
+        rules = f'<rect width="{w}" height="{h}" filter="url(#paper)" opacity=".9"/>{sheet_rules(T, w, h, sides)}'
+    else:
+        rules = (f'<rect width="{w}" height="{h}" filter="url(#paper)" opacity=".9"/>'
              f'<rect x="7.5" y="7.5" width="{w - 15}" height="{h - 15}" fill="none" stroke="{T["ink"]}" stroke-width="1.4"/>'
              f'<rect x="11.5" y="11.5" width="{w - 23}" height="{h - 23}" fill="none" stroke="{T["ink"]}" stroke-width=".5"/>'
              if retro else
              f'<rect x=".5" y=".5" width="{w - 1}" height="{h - 1}" rx="{rx}" fill="none" stroke="{T["rule"]}"/>')
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" '
+    # sheet slices fill their box exactly: "meet" would letterbox a fraction of a pixel when the browser rounds
+    # the image's height, and the page background would show as a hairline between slices
+    fill = ' preserveAspectRatio="none"' if T.get("sheet") else ""
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}"{fill} role="img" '
             f'aria-label="{esc(label)}"><title>{esc(label)}</title>'
             f'<defs>{defs_common(T)}{defs}<clipPath id="frame"><rect width="{w}" height="{h}" rx="{rx}"/></clipPath></defs>'
             f'<g clip-path="url(#frame)"><rect width="{w}" height="{h}" fill="{T["bg"]}"/>{body}{rules}</g></svg>\n')
@@ -339,7 +376,7 @@ def hero(T, d):
                 f'<text x="48" y="252" font-family="{MONO}" font-size="10.5" letter-spacing="1.6" fill="{T["faint"]}">'
                 + f'SINCE {since}  ·  REBUILT FROM THE GITHUB API  ·  {NOW:%d %b %Y}'.upper() + '</text></g>')
         body = starfield(T, random.Random(7), W, H, 80, lambda x, y: math.hypot(x - cx, y - cy) < 136) + orrery + left
-    return frame(T, W, H, body, f"Swastik Tripathi. {len(merged)} pull requests merged across {len(projects)} open-source projects.")
+    return frame(T, W, H, body, f"Swastik Tripathi. {len(merged)} pull requests merged across {len(projects)} open-source projects.", sides="lrt")
 
 
 # ---------------------------------------------------------------- ledger (stats + languages)
@@ -539,14 +576,13 @@ def fit(s, n):
     if len(s) <= n:
         return s
     cut = s[:n + 1].rsplit(" ", 1)[0]
-    return cut if len(cut) >= n * .6 else s[:n]
+    return (cut if len(cut) >= n * .6 else s[:n]).rstrip(" ,.:;-&/")
 
 
-def board(T, rows, title, sub, plate, statuses):
-    """An airport split-flap board. rows: (date, project, title, status). Each row flips through random letters
-    into place on load, and again every 18 seconds."""
+def board(T, rows, title, sub, plate, statuses, cols):
+    """A split-flap board. rows: (date, project, title, status); cols: (header, tiles), 57 tiles in all.
+    Each row flips through random letters into place on load, and again every 18 seconds."""
     retro = T.get("print")
-    cols = [("date", 6), ("project", 16), ("pull request", 26), ("status", 9)]
     W, x0, pitch = 840, 30, (840 - 60) / 60
     tw, th, rp, y0 = pitch - 1.6, 22, 31, 104
     H = y0 + len(rows) * rp + 22
@@ -572,7 +608,7 @@ def board(T, rows, title, sub, plate, statuses):
         t0 = .25 + i * .22
         for (name, n), sx, value in zip(cols, starts, row):
             value = fit(value, n)
-            color = statuses.get(value, T["accent"]) if name == "status" else ink
+            color = statuses.get(value, T["accent"]) if (name, n) == cols[-1] else ink
             xs = " ".join(f"{sx + k * pitch + tw / 2:.1f}" for k in range(len(value)))
             attrs = f'y="{y + 15.5}" font-family="{MONO}" font-size="13" font-weight="600" text-anchor="middle" fill="{color}"'
             if not value.strip():
@@ -591,11 +627,18 @@ def board(T, rows, title, sub, plate, statuses):
     return frame(T, W, H, body, f"{title}: {sub}")
 
 
-def arrivals(T, d):
+def state_colors(T):
+    if T["name"] == "classy":
+        return {"APPROVED": "#8fb573", "CHANGES REQUESTED": "#c0533a", "REVIEW REQUIRED": T["accent"], "OPEN": T["ink"], "DRAFT": T["muted"]}
+    return {"APPROVED": T["accent2"], "CHANGES REQUESTED": T["accent"], "REVIEW REQUIRED": T["ink"], "OPEN": T["ink"], "DRAFT": T["muted"]}
+
+
+def merged_board(T, d):
     rows = [(dt.datetime.fromisoformat(p["when"].replace("Z", "+00:00")).strftime("%b %d"),
-             short(d["repos"][p["repo"]]["name"]), headline(p["title"]), "LANDED")
+             short(d["repos"][p["repo"]]["name"]), headline(p["title"]), "MERGED")
             for p in d["merged"][:7]]
-    return board(T, rows, "Arrivals", "Pull requests that most recently merged.", 4, {"LANDED": T["accent"]})
+    return board(T, rows, "Recently merged", "The latest of my pull requests merged into other projects.", 4,
+                 {"MERGED": T["accent"]}, [("merged", 6), ("project", 16), ("pull request", 29), ("status", 6)])
 
 
 def review_queue(d):
@@ -607,17 +650,12 @@ def review_queue(d):
     return out
 
 
-def departures(T, d):
-    rows = []
-    for p in review_queue(d):
-        opened = dt.datetime.fromisoformat(p["created"].replace("Z", "+00:00"))
-        age = (NOW - opened).days
-        status = "BOARDING" if age <= 2 else "DELAYED" if age > 21 else "IN REVIEW"
-        rows.append((opened.strftime("%b %d"), short(d["repos"][p["repo"]]["name"]),
-                     headline(p["title"]), status))
-    delayed = "#c0533a" if T["name"] == "classy" else T["accent2"]
-    return board(T, rows or [("", "", "NOTHING IN REVIEW", "")], "Departures",
-                 "Pull requests waiting on maintainers.", 5, {"BOARDING": T["ink"], "IN REVIEW": T["accent"], "DELAYED": delayed})
+def open_board(T, d):
+    rows = [(dt.datetime.fromisoformat(p["created"].replace("Z", "+00:00")).strftime("%b %d"), short(d["repos"][p["repo"]]["name"]),
+             headline(p["title"]), p.get("state", "OPEN")) for p in review_queue(d)]
+    return board(T, rows or [("", "", "NONE OPEN RIGHT NOW", "")], "Open pull requests",
+                 "Waiting on maintainers, with the review status GitHub shows.", 5, state_colors(T),
+                 [("opened", 6), ("project", 13), ("pull request", 21), ("review", 17)])
 
 
 # ---------------------------------------------------------------- milestones
@@ -683,7 +721,7 @@ GITHUB_MARK = ("M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55
                " 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z")
 
 
-def pill(T, icon, text):
+def pill(T, icon, text, strip=None, sides=""):
     retro = T.get("print")
     w, h = round(46 + len(text) * (7.4 if retro else 7.1)), 32
     c, bg = T["ink"], T["bg"]
@@ -697,9 +735,15 @@ def pill(T, icon, text):
     border = (f'<rect x="1" y="1" width="{w - 2}" height="{h - 2}" fill="{bg}" stroke="{c}" stroke-width="1.2"/>'
               f'<rect x="3.5" y="3.5" width="{w - 7}" height="{h - 7}" fill="none" stroke="{c}" stroke-width=".4"/>' if retro else
               f'<rect x=".5" y=".5" width="{w - 1}" height="{h - 1}" rx="{h / 2 - .5}" fill="{bg}" stroke="{T["rule"]}"/>')
+    inner = (f'{border}<g transform="translate(15 8)">{icons[icon]}</g>'
+             f'<text x="39" y="20.5" font-family="{SERIF if retro else SANS}" font-size="13" fill="{c}">{esc(text)}</text>')
+    if strip:  # one cell of the sheet's link row: icon and name centred, the cell's rules frame it
+        sw, sh = strip
+        inner = inner.split("<g transform", 1)[1]
+        body = f'<g transform="translate({(sw - w + 12) / 2:.1f} {(sh - h) / 2:.1f})"><g transform{inner}</g>'
+        return frame(T, sw, sh, body, text, sides=sides)
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="{esc(text)}">'
-            f'<title>{esc(text)}</title>{border}<g transform="translate(15 8)">{icons[icon]}</g>'
-            f'<text x="39" y="20.5" font-family="{SERIF if retro else SANS}" font-size="13" fill="{c}">{esc(text)}</text></svg>\n')
+            f'<title>{esc(text)}</title>{inner}</svg>\n')
 
 
 # ---------------------------------------------------------------- visitors
@@ -749,8 +793,15 @@ def visitors_svg(T, visitors):
             f'stroke-width=".8" stroke-dasharray="3 4"><animate attributeName="stroke-dashoffset" from="0" to="-70" dur="8s" repeatCount="indefinite"/></path>'
             if len(pts) > 1 else "")
     body = (starfield(T, random.Random(17), W, H, 110 if not retro else 50) + grid + line + "".join(stars) +
-            heading(T, 32, 44, "The visitors’ constellation" if retro else "Visitors", sub, plate=8))
-    return frame(T, W, H, body, f"Visitors' constellation: {n} visitors left a star")
+            heading(T, 32, 44, "Constellation of visitors" if retro else "Visitors", sub, plate=8))
+    if T.get("sheet"):  # the sheet has no badge below it, so the plate carries its own button (the whole plate is the link)
+        ink, acc = T["ink"], T["accent"]
+        body += (f'<g><rect x="636" y="26" width="172" height="34" fill="{T["bg"]}" stroke="{acc}" stroke-width="1.5"/>'
+                 f'<rect x="640" y="30" width="164" height="26" fill="none" stroke="{acc}" stroke-width=".5"/>'
+                 f'<path d="M662 36 l1.6 5.4 5.4 1.6 -5.4 1.6 -1.6 5.4 -1.6 -5.4 -5.4 -1.6 5.4 -1.6z" fill="{acc}">'
+                 f'<animateTransform attributeName="transform" type="rotate" values="0 662 43;90 662 43" dur="6s" repeatCount="indefinite"/></path>'
+                 f'<text x="682" y="47.5" font-family="{SERIF}" font-size="12" letter-spacing="2.6" fill="{ink}">LEAVE A STAR</text></g>')
+    return frame(T, W, H, body, f"Visitors' constellation: {n} visitors left a star", sides="lrb")
 
 
 # ---------------------------------------------------------------- paper edition: one engraved folio
@@ -872,7 +923,9 @@ def register(T, rows, title, sub, plate, stamps):
     rng = random.Random(plate)
     for i, (date, project, text, status) in enumerate(rows):
         y = 136 + i * 34
-        text = text if len(text) <= 62 else text[:60].rsplit(" ", 1)[0] + "…"
+        sw = max(92, len(status) * 8.6 + 22)
+        room = int((808 - sw - 290) / 6.6)
+        text = text if len(text) <= room else text[:room - 2].rsplit(" ", 1)[0] + "…"
         out.append(f'<line x1="28" y1="{y + 11}" x2="812" y2="{y + 11}" stroke="{T["faint"]}" stroke-width=".7"/>'
                    f'<clipPath id="row{plate}{i}"><rect x="28" y="{y - 22}" width="680" height="32">{intro("width", 0, 680, .3 + i * .16, .8)}</rect></clipPath>'
                    f'<g clip-path="url(#row{plate}{i})">'
@@ -882,28 +935,25 @@ def register(T, rows, title, sub, plate, stamps):
         if status:
             color = stamps.get(status, T["accent"])
             tilt = rng.uniform(-5, 5)
-            out.append(f'<g transform="rotate({tilt:.1f} 762 {y - 5})" opacity=".85">{intro("opacity", 0, 1, .7 + i * .16, .25)}'
-                       f'<rect x="716" y="{y - 17}" width="92" height="22" rx="3" fill="none" stroke="{color}" stroke-width="1.5"/>'
-                       f'<rect x="719" y="{y - 14}" width="86" height="16" rx="2" fill="none" stroke="{color}" stroke-width=".5"/>'
-                       f'<text x="762" y="{y - 2}" text-anchor="middle" font-family="{SERIF}" font-size="10.5" letter-spacing="2" fill="{color}">{esc(status)}</text></g>')
+            sx, mid = 808 - sw, 808 - sw / 2
+            out.append(f'<g transform="rotate({tilt:.1f} {mid:.1f} {y - 5})" opacity=".85">{intro("opacity", 0, 1, .7 + i * .16, .25)}'
+                       f'<rect x="{sx:.1f}" y="{y - 17}" width="{sw:.1f}" height="22" rx="3" fill="none" stroke="{color}" stroke-width="1.5"/>'
+                       f'<rect x="{sx + 3:.1f}" y="{y - 14}" width="{sw - 6:.1f}" height="16" rx="2" fill="none" stroke="{color}" stroke-width=".5"/>'
+                       f'<text x="{mid:.1f}" y="{y - 2}" text-anchor="middle" font-family="{SERIF}" font-size="10.5" letter-spacing="2" fill="{color}">{esc(status)}</text></g>')
     return {"w": W, "h": H, "body": "".join(out), "defs": "", "label": title}
 
 
 def register_arrivals(T, d):
     rows = [(dt.datetime.fromisoformat(p["when"].replace("Z", "+00:00")).strftime("%-d %b"),
-             short(d["repos"][p["repo"]]["name"]), headline(p["title"]), "LANDED") for p in d["merged"][:7]]
-    return register(T, rows, "Register of arrivals", "Pull requests most recently merged.", 4, {})
+             short(d["repos"][p["repo"]]["name"]), headline(p["title"]), "MERGED") for p in d["merged"][:7]]
+    return register(T, rows, "Register of merged pull requests", "The latest merged into other projects.", 4, {})
 
 
 def register_departures(T, d):
-    rows = []
-    for p in review_queue(d):
-        opened = dt.datetime.fromisoformat(p["created"].replace("Z", "+00:00"))
-        age = (NOW - opened).days
-        rows.append((opened.strftime("%-d %b"), short(d["repos"][p["repo"]]["name"]), headline(p["title"]),
-                     "BOARDING" if age <= 2 else "DELAYED" if age > 21 else "IN REVIEW"))
-    return register(T, rows or [("", "", "Nothing waiting on maintainers.", "")], "Register of departures",
-                    "Pull requests waiting on maintainers.", 5, {"BOARDING": T["ink"], "IN REVIEW": T["accent2"], "DELAYED": T["accent"]})
+    rows = [(dt.datetime.fromisoformat(p["created"].replace("Z", "+00:00")).strftime("%-d %b"), short(d["repos"][p["repo"]]["name"]),
+             headline(p["title"]), p.get("state", "OPEN")) for p in review_queue(d)]
+    return register(T, rows or [("", "", "None open right now.", "")], "Register of open pull requests",
+                    "Waiting on maintainers, with the review status GitHub shows.", 5, state_colors(T))
 
 
 def visitors_chart(T, visitors):
@@ -1007,6 +1057,12 @@ def folio(T, d, visitors):
 
 # ---------------------------------------------------------------- README
 
+def STRIP(T):
+    """The sheet's link row: (key, href, alt, percent of the width). Percentages add up to 100."""
+    return [("web", SITE, "swastiktripathi.dev", 27), ("linkedin", LINKEDIN, "LinkedIn", 25),
+            ("x", "https://x.com/" + X_HANDLE, "X", 24), ("github", f"https://github.com/{ME}", "GitHub", 24)]
+
+
 def readme(T, d, visitors, prefix, active):
     merged, repos = d["merged"], d["repos"]
     projects = Counter(p["repo"] for p in merged)
@@ -1018,10 +1074,11 @@ def readme(T, d, visitors, prefix, active):
     av = lambda slug, s=40: f"https://github.com/{repos[slug]['owner']}.png?size={s}"
     day = lambda iso: dt.datetime.fromisoformat(iso.replace("Z", "+00:00")).strftime("%b %-d")
     cell = lambda t: t.replace("|", "\\|").replace("<", "&lt;")
-    landed = "\n".join(f'| <img src="{av(p["repo"])}" width="18" height="18"> | {repos[p["repo"]]["name"]} | '
+    merged_rows = "\n".join(f'| <img src="{av(p["repo"])}" width="18" height="18"> | {repos[p["repo"]]["name"]} | '
                        f'[{cell(p["title"])}]({p["url"]}) | {day(p["when"])} |' for p in merged[:7])
-    waiting = "\n".join(f'| <img src="{av(p["repo"])}" width="18" height="18"> | {repos[p["repo"]]["name"]} | '
-                        f'[{cell(p["title"])}]({p["url"]}) | {day(p["created"])} |' for p in review_queue(d))
+    open_rows = "\n".join(f'| <img src="{av(p["repo"])}" width="18" height="18"> | {repos[p["repo"]]["name"]} | '
+                          f'[{cell(p["title"])}]({p["url"]}) | {day(p["created"])} | {p.get("state", "OPEN").capitalize()} |'
+                          for p in review_queue(d))
     notes = [v for v in visitors if v.get("approved") and v.get("message")][-5:]
     notes_md = ("\n".join(f'> “{html.escape(v["message"])}”<br><sub>[{v["login"]}](https://github.com/{v["login"]})</sub>\n'
                           for v in reversed(notes)) if notes else "")
@@ -1034,20 +1091,35 @@ def readme(T, d, visitors, prefix, active):
 <summary><b>Open the boards</b>: every pull request above, with links</summary>
 <br>
 
-**Arrivals**
+**Recently merged**
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
-{landed}
+{merged_rows}
 
-**Departures**
+**Open pull requests**
 
-| | Project | Pull request | Opened |
-|:-:|---|---|---|
-{waiting or "| | | Nothing waiting right now. | |"}
+| | Project | Pull request | Opened | Review |
+|:-:|---|---|---|---|
+{open_rows or "| | | None open right now. | | |"}
 
 </details>"""
-    if T.get("folio"):
+    if T.get("sheet") and not T.get("folio"):
+        # one <p>, every image align="top" (no baseline gap) and joined by <br>: the slices meet edge to edge
+        img = lambda name, alt, w="100%": f'<img src="{a(name)}" width="{w}" align="top" alt="{alt}">'
+        link = lambda href, inner: f'<a href="{href}">{inner}</a>'
+        strip = "".join(link(href, img(f"strip-{key}.svg", alt, f"{pct}%")) for key, href, alt, pct in STRIP(T))
+        rows = [link(SITE, img("hero.svg", f"Swastik Tripathi. {len(merged)} pull requests merged across {len(projects)} open-source projects.")),
+                strip,
+                link(merged_search, img("ledger.svg", f"{len(merged)} PRs merged across {len(projects)} projects")),
+                link(merged_search, img("orrery.svg", f"An orrery of the {len(projects)} projects that merged my pull requests")),
+                link(merged_search, img("merged.svg", "Recently merged pull requests")),
+                link(open_search, img("open.svg", "Open pull requests and their review status")),
+                img("milestones.svg", "Milestones"),
+                link(merged_search, img("almanac.svg", "Merged pull requests per week")),
+                link(issue, img("visitors.svg", "Visitors' constellation: click to leave a star"))]
+        sections = '<p align="center">' + "<br>\n".join(rows) + "</p>\n\n" + boards
+    elif T.get("folio"):
         sections = f"""<a href="{merged_search}"><img src="{a('folio.svg')}" width="100%" alt="An engraved folio: Swastik Tripathi's open-source work"></a>
 
 {boards}"""
@@ -1056,9 +1128,9 @@ def readme(T, d, visitors, prefix, active):
 
 <a href="{merged_search}"><img src="{a('orrery.svg')}" width="100%" alt="An orrery of the {len(projects)} projects that merged my pull requests"></a>
 
-<a href="{merged_search}"><img src="{a('arrivals.svg')}" width="100%" alt="Arrivals: pull requests that most recently merged"></a>
+<a href="{merged_search}"><img src="{a('merged.svg')}" width="100%" alt="Recently merged pull requests"></a>
 
-<a href="{open_search}"><img src="{a('departures.svg')}" width="100%" alt="Departures: pull requests waiting on maintainers"></a>
+<a href="{open_search}"><img src="{a('open.svg')}" width="100%" alt="Open pull requests and their review status"></a>
 
 {boards}
 
@@ -1067,17 +1139,20 @@ def readme(T, d, visitors, prefix, active):
 <a href="{merged_search}"><img src="{a('almanac.svg')}" width="100%" alt="Merged pull requests per week"></a>
 
 <a href="{issue}"><img src="{a('visitors.svg')}" width="100%" alt="Visitors' constellation: every star is someone who stopped by"></a>"""
-    top = "" if T.get("folio") else f"""<a href="{SITE}"><img src="{a('hero.svg')}" width="100%" alt="Swastik Tripathi. {len(merged)} pull requests merged across {len(projects)} open-source projects."></a>
+    top = "" if T.get("folio") or T.get("sheet") else f"""<a href="{SITE}"><img src="{a('hero.svg')}" width="100%" alt="Swastik Tripathi. {len(merged)} pull requests merged across {len(projects)} open-source projects."></a>
 
 """
     star_badge = f'https://img.shields.io/badge/Leave_a_star-{T["accent"].lstrip("#")}?style=flat-square&logo=githubsponsors&logoColor=white'
+    if T.get("sheet") and not T.get("folio"):
+        pills, button, how = "", '<p align="center">', "Leave a star: click the constellation above"
+    else:
+        pills = f'<p align="center">{pills}</p>\n\n'
+        button = f'<p align="center"><a href="{issue}"><img src="{star_badge}" alt="Leave a star" height="26"></a><br>\n'
+        how = "Click"
     return f"""<!-- Generated by build/build.py ({T['name']} edition). Edit that, not this file: it is rebuilt every 6 hours. -->
-{top}<p align="center">{pills}</p>
+{top}{pills}{sections}
 
-{sections}
-
-<p align="center"><a href="{issue}"><img src="{star_badge}" alt="Leave a star" height="26"></a><br>
-<sub>Click, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
+{button}<sub>{how}, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
 
 {notes_md}
 <p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="{prefix}build/build.py">build/build.py</a> · last run {NOW:%b %-d, %Y, %H:%M} UTC · also in the {editions} editions</sub></p>
@@ -1148,10 +1223,17 @@ def main():
             files = {"folio.svg": folio(T, d, visitors)}
         else:
             files = {"hero.svg": hero(T, d), "ledger.svg": ledger(T, d), "orrery.svg": orrery(T, d),
-                     "arrivals.svg": arrivals(T, d), "departures.svg": departures(T, d), "milestones.svg": milestones(T, d),
+                     "merged.svg": merged_board(T, d), "open.svg": open_board(T, d), "milestones.svg": milestones(T, d),
                      "almanac.svg": almanac(T, d), "visitors.svg": visitors_svg(T, visitors)}
-        files |= {"link-web.svg": pill(T, "web", "swastiktripathi.dev"), "link-linkedin.svg": pill(T, "linkedin", "swastik-tripathi"),
-                 "link-x.svg": pill(T, "x", "@" + X_HANDLE), "link-github.svg": pill(T, "github", "@" + ME)}
+        if not T.get("sheet") or T.get("folio"):
+            files |= {"link-web.svg": pill(T, "web", "swastiktripathi.dev"), "link-linkedin.svg": pill(T, "linkedin", "swastik-tripathi"),
+                      "link-x.svg": pill(T, "x", "@" + X_HANDLE), "link-github.svg": pill(T, "github", "@" + ME)}
+        if T.get("sheet") and not T.get("folio"):
+            texts = {"web": "swastiktripathi.dev", "linkedin": "swastik-tripathi", "x": "@" + X_HANDLE, "github": "@" + ME}
+            strip = STRIP(T)
+            for i, (key, _, _, pct) in enumerate(strip):
+                sides = ("l" if i == 0 else "") + ("r" if i == len(strip) - 1 else "")
+                files[f"strip-{key}.svg"] = pill(T, key, texts[key], strip=(round(840 * pct / 100, 1), 50), sides=sides)
         for fname, text in files.items():
             open(os.path.join(folder, fname), "w").write(text)
         if name == active:
