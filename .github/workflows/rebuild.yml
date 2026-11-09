@@ -34,7 +34,9 @@ jobs:
       - name: Rebuild
         id: build
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # The built-in token can only search this repo, so it finds no merged PRs. PROFILE_TOKEN is a
+          # fine-grained token with read-only access to public repositories (no other permissions).
+          GH_TOKEN: ${{ secrets.PROFILE_TOKEN }}
           ACTION: ${{ github.event.action }}
           LOGIN: ${{ github.event.issue.user.login }}
           STAR_MESSAGE: ${{ github.event.issue.body }}
