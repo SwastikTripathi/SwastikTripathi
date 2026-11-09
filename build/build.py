@@ -14,6 +14,7 @@ Standard library only.
 """
 import base64, datetime as dt, hashlib, html, json, math, os, random, re, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
 from collections import Counter
+import sky  # noqa: E402  (build/sky.py)
 
 ME = "SwastikTripathi"
 SKIP_OWNERS = {"swastiktripathi", "nammayatri", "rostring36222"}  # own and employer repos aren't contributions
@@ -401,32 +402,28 @@ def hero(T, d):
     since = min(p["when"] for p in merged)[:4]
     cx, cy = 668, 158
     if retro:
-        rng = random.Random(31)
-        inner = []
-        for _ in range(70):
-            a, rr = rng.uniform(0, 2 * math.pi), 96 * math.sqrt(rng.random())
-            inner.append(f'<circle cx="{cx + rr * math.cos(a):.1f}" cy="{cy + rr * math.sin(a):.1f}" r="{rng.choice([.6, .8, 1, 1.3, 1.8]):.1f}" fill="{T["ink"]}"/>')
-        figures = []
-        for k in range(3):
-            pts = []
-            a0, r0 = rng.uniform(0, 2 * math.pi), rng.uniform(25, 70)
-            for j in range(4 + k):
-                a, rr = a0 + j * rng.uniform(.25, .5), r0 + rng.uniform(-18, 18)
-                pts.append((cx + rr * math.cos(a), cy + rr * math.sin(a)))
-            figures.append(f'<polyline points="{" ".join(f"{x:.1f},{y:.1f}" for x, y in pts)}" fill="none" stroke="{T["ink"]}" stroke-width=".7"/>'
-                           + "".join(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.2" fill="{T["bg"]}" stroke="{T["ink"]}" stroke-width=".9"/>' for x, y in pts))
+        # the real sky over Bengaluru at the moment the latest pull request was merged
+        last = d["merged"][0]
+        at = d.get("sky_at") or dt.datetime.fromisoformat(last["when"].replace("Z", "+00:00"))
+        ist = at.astimezone(dt.timezone(dt.timedelta(hours=5, minutes=30)))
+        num = last["url"].rstrip("/").rsplit("/", 1)[-1]
+        stars, _ = sky.chart(T, cx, cy, 103, at, 12.9716, 77.5946, glow=T.get("blend"))
+        cap = "font-family=\"" + SERIF + "\" font-size=\"8.5\" letter-spacing=\"1.6\" fill=\"" + T["muted"] + "\""
+        top = f"THE SKY OVER BENGALURU  ·  {ist:%-d %b %Y}  ·  {ist:%-I:%M %p} IST".upper()
+        bottom = f"AS {last['repo']} #{num} MERGED".upper()
         chart = (f'<circle cx="{cx}" cy="{cy}" r="118" fill="none" stroke="{T["ink"]}" stroke-width="1.3"/>'
                  f'<circle cx="{cx}" cy="{cy}" r="104" fill="none" stroke="{T["ink"]}" stroke-width=".6"/>'
-                 + ticks(T, cx, cy, 118, 5, 15, 5, 13) +
-                 f'<clipPath id="disc"><circle cx="{cx}" cy="{cy}" r="103"/></clipPath>'
-                 f'<g clip-path="url(#disc)"><g>{spin(cx, cy, 360)}'
-                 + "".join(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{T["faint"]}" stroke-width=".6"/>' for r in (35, 70))
-                 + "".join(f'<line x1="{cx}" y1="{cy}" x2="{cx + 103 * math.cos(math.radians(a)):.1f}" y2="{cy + 103 * math.sin(math.radians(a)):.1f}" stroke="{T["faint"]}" stroke-width=".6"/>' for a in range(0, 360, 30))
-                 + "".join(inner) + "".join(figures) + '</g>'
-                 f'<ellipse cx="{cx}" cy="{cy}" rx="103" ry="38" transform="rotate(-23 {cx} {cy})" fill="none" stroke="{T["accent"]}" stroke-width=".9" stroke-dasharray="4 3"/>'
-                 '</g>'
-                 + "".join(f'<text x="{cx + 129 * math.cos(math.radians(a - 90)):.1f}" y="{cy + 129 * math.sin(math.radians(a - 90)) + 3.5:.1f}" text-anchor="middle" '
-                           f'font-family="{SERIF}" font-size="9.5" fill="{T["ink"]}">{roman(a // 30 + 1)}</text>' for a in range(0, 360, 30)))
+                 # the dial turns the way the sky does (counterclockwise, seen looking up), once every 4 minutes
+                 + f'<g>{spin(cx, cy, 240, reverse=True)}' + ticks(T, cx, cy, 118, 5, 15, 5, 13)
+                 + "".join(f'<path d="M{cx + 111 * math.cos(math.radians(a)):.1f} {cy + 111 * math.sin(math.radians(a)) - 4.5:.1f} l3.5 4.5 l-3.5 4.5 l-3.5 -4.5 z" '
+                           f'fill="{T["accent"] if a == 270 else T["bg"]}" stroke="{T["accent"]}" stroke-width=".8"/>' for a in (0, 90, 180, 270))
+                 + '</g>' +
+                 f'<clipPath id="disc"><circle cx="{cx}" cy="{cy}" r="103.5"/></clipPath>'
+                 f'<g clip-path="url(#disc)">{stars}</g>'
+                 f'<path id="capT" d="M{cx - 125} {cy} A125 125 0 0 1 {cx + 125} {cy}" fill="none"/>'
+                 f'<path id="capB" d="M{cx - 133} {cy} A133 133 0 0 0 {cx + 133} {cy}" fill="none"/>'
+                 f'<text {cap}><textPath href="#capT" startOffset="50%" text-anchor="middle">{esc(top)}</textPath></text>'
+                 f'<text {cap}><textPath href="#capB" startOffset="50%" text-anchor="middle">{esc(bottom)}</textPath></text>')
         left = (f'<text x="48" y="54" font-family="{SERIF}" font-size="11.5" letter-spacing="3.2" fill="{T["ink"]}">PLATE I</text>'
                 f'<line x1="48" y1="64" x2="470" y2="64" stroke="{T["ink"]}" stroke-width=".6"/>'
                 f'<text x="48" y="102" font-family="{SERIF}" font-size="12" letter-spacing="3.2" fill="{T["muted"]}">OPEN SOURCE  ·  MACOS &amp; IOS  ·  INDIA</text>'
