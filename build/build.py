@@ -105,7 +105,7 @@ def review_states():
         nodes = run_gh(["graphql", "-f", f"query={q}", "-f", f"q=author:{ME} is:pr is:open"])["data"]["search"]["nodes"]
     except (RuntimeError, KeyError, TypeError):
         return {}
-    words = {"APPROVED": "APPROVED", "CHANGES_REQUESTED": "CHANGES REQUESTED", "REVIEW_REQUIRED": "REVIEW REQUIRED"}
+    words = {"APPROVED": "APPROVED", "CHANGES_REQUESTED": "REVIEWING", "REVIEW_REQUIRED": "REVIEWING"}
     return {n["url"]: "DRAFT" if n.get("isDraft") else words.get(n.get("reviewDecision"), "OPEN") for n in nodes if n}
 
 
@@ -134,10 +134,22 @@ def collect():
     states = review_states()
     for p in open_:
         p["state"] = states.get(p["url"], "OPEN")
+    own = []
+    try:
+        names = [l.strip() for l in open(os.path.join(DATA, "my-repos.txt")) if l.strip() and not l.startswith("#")]
+    except OSError:
+        names = []
+    for name in names[:5]:
+        try:
+            info = gh(f"repos/{ME}/{name}")
+        except RuntimeError:
+            continue
+        if not info.get("private"):
+            own.append({"name": info["name"], "url": info["html_url"], "lang": info.get("language") or "", "stars": info["stargazers_count"]})
     me = gh(f"users/{ME}")
     return {"merged": sorted(merged, key=lambda p: p["when"], reverse=True), "unmerged": unmerged,
             "open": [p for p in open_ if p["repo"] in repos], "repos": repos,
-            "me_avatar": data_uri(me["avatar_url"] + "&s=128")}
+            "me_avatar": data_uri(me["avatar_url"] + "&s=128"), "own": own}
 
 
 def week_streak(merged):
@@ -434,13 +446,13 @@ def ledger(T, d):
 # ---------------------------------------------------------------- orrery
 
 def orrery(T, d):
-    paper = T["name"] == "paper"
-    W, H, cx, cy = (840, 820, 420, 444) if paper else (840, 760, 420, 404)
+    paper = T["name"] in ("paper", "retro")  # the planisphere orrery
+    W, H, cx, cy = (840, 840 if T.get("sheet") else 820, 420, 444) if paper else (840, 760, 420, 404)
     retro = T.get("print")
     merged, repos = d["merged"], d["repos"]
     counts = Counter(p["repo"] for p in merged)
     order = sorted(counts, key=lambda r: (-counts[r], -repos[r]["stars"]))
-    radii, durs = [122, 207, 292], [130, 200, 280]
+    radii, durs = [168, 240, 304], [130, 200, 280]
     n = len(order)
     sizes = [max(1, round(n * r / sum(radii))) for r in radii[:2]]
     rings = [order[:sizes[0]], order[sizes[0]:sizes[0] + sizes[1]], order[sizes[0] + sizes[1]:]]
@@ -480,6 +492,21 @@ def orrery(T, d):
             pid += 1
         g.append('</g>')
         bodies.append("".join(g))
+    own = d.get("own", [])
+    if own:
+        R, dur = 100, 90
+        orbits.append(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" stroke="{T["accent"]}" stroke-width=".7" stroke-dasharray="2 3"/>')
+        g = [f'<g>{spin(cx, cy, dur)}']
+        for j, o in enumerate(own):
+            a = math.radians(-90 + 45 + j * 360 / len(own))
+            px, py = cx + R * math.cos(a), cy + R * math.sin(a)
+            label = o["name"] if len(o["name"]) <= 16 else o["name"][:15] + "…"
+            g.append(f'<g transform="translate({px:.1f} {py:.1f})"><g>{spin(0, 0, dur, reverse=True)}'
+                     f'<circle r="11" fill="{T["bg"]}" stroke="{T["accent"]}" stroke-width="1.1"/><circle r="14" fill="none" stroke="{T["accent"]}" stroke-width=".4"/>'
+                     f'<text y="4.5" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="13" fill="{T["accent"]}">{esc(o["name"][0].upper())}</text>'
+                     f'<text y="28" text-anchor="middle" font-family="{SERIF}" font-size="11" fill="{T["ink"]}">{esc(label)}</text></g></g>')
+        g.append('</g>')
+        bodies.append("".join(g))
     if retro:
         rays = "".join(f'<line x1="{cx + 44 * math.cos(math.radians(a)):.1f}" y1="{cy + 44 * math.sin(math.radians(a)):.1f}" '
                        f'x2="{cx + (58 if a % 30 == 0 else 51) * math.cos(math.radians(a)):.1f}" y2="{cy + (58 if a % 30 == 0 else 51) * math.sin(math.radians(a)):.1f}" '
@@ -490,7 +517,7 @@ def orrery(T, d):
                f'<circle cx="{cx}" cy="{cy}" r="40" fill="{T["bg"]}" stroke="{T["accent"]}"/>')
     sun += ((f'<image href="{d["me_avatar"]}" x="{cx - 36}" y="{cy - 36}" width="72" height="72" clip-path="url(#me)"/>'
              if d["me_avatar"] else "") +
-            f'<text x="{cx}" y="{cy + 76}" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="12" fill="{T["muted"]}">@{ME}</text>')
+            "")
     outer = (f'<circle cx="{cx}" cy="{cy}" r="336" fill="none" stroke="{T["ink"] if retro else T["rule"]}" stroke-width="{.8 if retro else 1}"/>'
              + ticks(T, cx, cy, 336, 5, 30, 4, 10))
     if paper:  # drawn like a planisphere: heavy rim, tick band, numerals, meridians, a dashed ecliptic
@@ -507,6 +534,7 @@ def orrery(T, d):
     body = (starfield(T, random.Random(5), W, H, 150 if not retro else 90, lambda x, y: math.hypot(x - cx, y - cy) < 60) +
             outer + "".join(orbits) + sun + "".join(bodies) +
             heading(T, 32, 44, "An orrery of merged work" if retro else "The orrery", "Every body is a project that merged my work.", plate=3) +
+            (f'<text x="32" y="{86 if retro else 84}" font-family="{SERIF}" font-style="italic" font-size="13" fill="{T["accent"]}">The inner ring is my own.</text>' if own else "") +
             f'<text x="{W - 32}" y="44" text-anchor="end" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{T["muted"]}">size: the project’s and its organization’s stars</text>'
             f'<text x="{W - 32}" y="62" text-anchor="end" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{T["muted"]}">inner orbits: more merges</text>')
     defs = "".join(clips) + f'<clipPath id="me"><circle cx="{cx}" cy="{cy}" r="36"/></clipPath>'
@@ -629,8 +657,8 @@ def board(T, rows, title, sub, plate, statuses, cols):
 
 def state_colors(T):
     if T["name"] == "classy":
-        return {"APPROVED": "#8fb573", "CHANGES REQUESTED": "#c0533a", "REVIEW REQUIRED": T["accent"], "OPEN": T["ink"], "DRAFT": T["muted"]}
-    return {"APPROVED": T["accent2"], "CHANGES REQUESTED": T["accent"], "REVIEW REQUIRED": T["ink"], "OPEN": T["ink"], "DRAFT": T["muted"]}
+        return {"APPROVED": "#8fb573", "REVIEWING": T["accent"], "OPEN": T["ink"], "DRAFT": T["muted"]}
+    return {"APPROVED": T["accent2"], "REVIEWING": T["accent"], "OPEN": T["ink"], "DRAFT": T["muted"]}
 
 
 def merged_board(T, d):
@@ -655,7 +683,7 @@ def open_board(T, d):
              headline(p["title"]), p.get("state", "OPEN")) for p in review_queue(d)]
     return board(T, rows or [("", "", "NONE OPEN RIGHT NOW", "")], "Open pull requests",
                  "Waiting on maintainers, with the review status GitHub shows.", 5, state_colors(T),
-                 [("opened", 6), ("project", 13), ("pull request", 21), ("review", 17)])
+                 [("opened", 6), ("project", 16), ("pull request", 26), ("review", 9)])
 
 
 # ---------------------------------------------------------------- milestones
@@ -1023,6 +1051,11 @@ def colophon(T):
     return {"w": W, "h": H, "body": body, "defs": "", "label": "Colophon"}
 
 
+def slab(T, part):
+    """A folio part as a standalone plate."""
+    return frame(T, part["w"], part["h"], part["body"], part["label"], part["defs"])
+
+
 def fleuron(T):
     ink, acc = T["ink"], T["accent"]
     body = (f'<line x1="250" y1="22" x2="392" y2="22" stroke="{ink}" stroke-width=".7"/><line x1="448" y1="22" x2="590" y2="22" stroke="{ink}" stroke-width=".7"/>'
@@ -1223,7 +1256,8 @@ def main():
             files = {"folio.svg": folio(T, d, visitors)}
         else:
             files = {"hero.svg": hero(T, d), "ledger.svg": ledger(T, d), "orrery.svg": orrery(T, d),
-                     "merged.svg": merged_board(T, d), "open.svg": open_board(T, d), "milestones.svg": milestones(T, d),
+                     "merged.svg": slab(T, register_arrivals(T, d)) if T.get("sheet") else merged_board(T, d),
+                     "open.svg": slab(T, register_departures(T, d)) if T.get("sheet") else open_board(T, d), "milestones.svg": milestones(T, d),
                      "almanac.svg": almanac(T, d), "visitors.svg": visitors_svg(T, visitors)}
         if not T.get("sheet") or T.get("folio"):
             files |= {"link-web.svg": pill(T, "web", "swastiktripathi.dev"), "link-linkedin.svg": pill(T, "linkedin", "swastik-tripathi"),

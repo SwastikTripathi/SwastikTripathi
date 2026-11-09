@@ -1,0 +1,5 @@
+# Your own repos for the orrery's inner ring, one per line (max 5). Swap freely.
+cute-whiplash
+gita-ai
+thera-ai
+GenAILeaderboard
