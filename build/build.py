@@ -133,7 +133,12 @@ def own_repos():
             if name not in cache:
                 continue
         c = cache[name]
-        own.append({"name": title or name, "lang": c["lang"], "stars": c["stars"], "private": c["private"],
+        logo = next((os.path.join(DATA, "logos", name + ext) for ext in (".png", ".svg")
+                     if os.path.exists(os.path.join(DATA, "logos", name + ext))), None)
+        if logo:
+            mime = "image/svg+xml" if logo.endswith(".svg") else "image/png"
+            logo = f"data:{mime};base64," + base64.b64encode(open(logo, "rb").read()).decode()
+        own.append({"logo": logo, "name": title or name, "lang": c["lang"], "stars": c["stars"], "private": c["private"],
                     "about": note or c["description"], "pushed": c["pushed"]})
     json.dump(cache, open(cache_path, "w"), indent=1, sort_keys=True)
     return own
@@ -735,7 +740,12 @@ def workshop(T, d):
         lines = wrap(about, chars, 4)
         name = o["name"] if len(o["name"]) * 8 < cw - 30 else o["name"][:int((cw - 38) / 8)] + "…"
         meta = "  ·  ".join(t for t in [f"touched {when:%b %Y}", "private" if o["private"] else f"★ {o['stars']}" if o["stars"] else ""] if t)
-        seal = (f'<g transform="translate({x + 34:.1f} {y + 40})">'
+        seal = (f'<g transform="translate({x + 34:.1f} {y + 40})"><g>'
+                f'<animateTransform attributeName="transform" type="rotate" values="0;{4 if i % 2 else -4};0" dur="{7 + i}s" repeatCount="indefinite"/>'
+                f'<clipPath id="logo{i}"><rect x="-20" y="-20" width="40" height="40" rx="9"/></clipPath>'
+                f'<rect x="-22.5" y="-22.5" width="45" height="45" rx="11" fill="none" stroke="{ink}" stroke-width=".6"/>'
+                f'<image href="{o["logo"]}" x="-20" y="-20" width="40" height="40" clip-path="url(#logo{i})"/></g></g>') if o.get("logo") else (
+                f'<g transform="translate({x + 34:.1f} {y + 40})">'
                 f'<g><animateTransform attributeName="transform" type="rotate" values="0;{6 if i % 2 else -6};0" dur="{7 + i}s" repeatCount="indefinite"/>'
                 + "".join(f'<circle cx="{19 * math.cos(math.radians(a)):.1f}" cy="{19 * math.sin(math.radians(a)):.1f}" r="3.2" fill="{acc}"/>' for a in range(0, 360, 30))
                 + f'<circle r="19" fill="{acc}"/><circle r="14.5" fill="none" stroke="{T["bg"] if retro else "#0c0c0d"}" stroke-width=".7"/>'
