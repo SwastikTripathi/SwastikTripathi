@@ -462,26 +462,48 @@ def orrery(T, d):
     pid = 0
     dash = ' stroke-dasharray="1 4"' if retro else ""
     italic = 'font-style="italic" ' if retro else ""
-    # every project gets its own angle, alternating rings, and all rings turn together: no two planets ever meet
-    slot, queues = {}, [list(m) for m in rings]
-    while any(queues):
-        for q in queues:
-            if q:
-                slot[q.pop(0)] = len(slot)
+    # Everything turns together (rings, ellipse, my repos), so the layout is fixed and can be planned once.
+    size = lambda slug: min(28, max(9, 9 + (.55 * math.log10(max(repos[slug]["stars"], 500))
+                                         + .45 * math.log10(max(repos[slug]["owner_stars"], 500)) - 3.05) * 9))
+    ERX, ERY, TILT = 330, 122, -21
+    own = d.get("own", [])
+    ell = paper and own
     a0 = rng.uniform(0, 360)
+    ang = {}
+    if ell:
+        # projects stay outside the ellipse: on each ring only angles where the ellipse is well inside the ring,
+        # picked greedily to keep every planet (and the label under it) as far as possible from the others
+        def ell_r(deg):
+            f = math.radians(deg - TILT)
+            return ERX * ERY / math.hypot(ERY * math.cos(f), ERX * math.sin(f))
+        placed = []
+        for R, members in zip(radii, rings):
+            for slug in members:
+                rb = size(slug)
+                ok = [a for a in range(360) if ell_r(a) < R - rb - 44] or list(range(360))
+                spot = lambda a: (R * math.cos(math.radians(a)), R * math.sin(math.radians(a)) + 16)
+                best = max(ok, key=lambda a: min((math.dist(spot(a), q) for q in placed), default=0) + (a % 7) * 1e-3)
+                ang[slug] = best
+                placed.append(spot(best))
+    else:
+        # every project gets its own angle, alternating rings
+        queues = [list(m) for m in rings]
+        while any(queues):
+            for q in queues:
+                if q:
+                    ang[q.pop(0)] = a0 + len(ang) * 360 / n
     for k, (R, members, dur) in enumerate(zip(radii, rings, durs)):
         if not members:
             continue
-        orbits.append(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" stroke="{T["ink"] if retro else T["rule"]}" '
+        orbits.append("" if ell else f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" stroke="{T["ink"] if retro else T["rule"]}" '
                       f'stroke-width="{.6 if retro else 1}"{dash}/>')
         g = [f'<g>{spin(cx, cy, dur)}']
         for j, slug in enumerate(members):
             info = repos[slug]
-            a = math.radians(a0 + slot[slug] * 360 / n)
+            a = math.radians(ang[slug])
             px, py = cx + R * math.cos(a), cy + R * math.sin(a)
             # size: the project's own stars and the stars of the organization behind it
-            w = .55 * math.log10(max(info["stars"], 500)) + .45 * math.log10(max(info["owner_stars"], 500))
-            r = min(28, max(9, 9 + (w - 3.05) * 9))
+            r = size(slug)
             clips.append(f'<clipPath id="p{pid}"><circle r="{r:.1f}"/></clipPath>')
             logo = (f'<image href="{info["avatar"]}" x="{-r:.1f}" y="{-r:.1f}" width="{2 * r:.1f}" height="{2 * r:.1f}" '
                     f'clip-path="url(#p{pid})"/>' if info.get("avatar") else "")
@@ -499,27 +521,32 @@ def orrery(T, d):
             pid += 1
         g.append('</g>')
         bodies.append("".join(g))
-    own = d.get("own", [])
-    ERX, ERY, TILT, EDUR = 160, 80, -21, 160
+    EDUR = durs[0]
     if own:
         g = [f'<g>{spin(cx, cy, EDUR)}']
-        if paper:  # the ecliptic: an ellipse that turns, carrying my repos fixed on it
+        if paper:  # the ecliptic: a wide ellipse that turns with the sky, my repos inside it
             g.append(f'<ellipse cx="{cx}" cy="{cy}" rx="{ERX}" ry="{ERY}" transform="rotate({TILT} {cx} {cy})" fill="none" '
                      f'stroke="{T["accent"]}" stroke-width="1.1" stroke-dasharray="6 4"/>')
         else:
             g.append(f'<circle cx="{cx}" cy="{cy}" r="100" fill="none" stroke="{T["accent"]}" stroke-width=".7" stroke-dasharray="2 3"/>')
+        half = (len(own) + 1) // 2
         for j, o in enumerate(own):
             t = math.radians(45 + j * 360 / len(own))
-            if paper:
-                ex, ey, tr = ERX * math.cos(t), ERY * math.sin(t), math.radians(TILT)
+            if paper:  # along the long axis, either side of the sun, a little above it so the label fits inside
+                side, k = (-1, j) if j < half else (1, j - half)
+                cnt = half if side < 0 else len(own) - half
+                ex = side * ((110 + k * 140 / (cnt - 1)) if cnt > 1 else 170)
+                ey, tr = -20, math.radians(TILT)
                 px, py = cx + ex * math.cos(tr) - ey * math.sin(tr), cy + ex * math.sin(tr) + ey * math.cos(tr)
             else:
                 px, py = cx + 100 * math.cos(t), cy + 100 * math.sin(t)
             label = o["name"] if len(o["name"]) <= 18 else o["name"][:17] + "…"
             g.append(f'<g transform="translate({px:.1f} {py:.1f})"><g>{spin(0, 0, EDUR, reverse=True)}'
-                     f'<circle r="12" fill="{T["bg"]}" stroke="{T["accent"]}" stroke-width="1.2"/><circle r="15.5" fill="none" stroke="{T["accent"]}" stroke-width=".4"/>'
-                     f'<text y="5" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="14" fill="{T["accent"]}">{esc(o["name"][0].upper())}</text>'
-                     f'<text y="31" text-anchor="middle" font-family="{SERIF}" font-size="12" fill="{T["ink"]}">{esc(label)}</text></g></g>')
+                     f'<circle r="21" fill="none" stroke="{T["accent"]}" stroke-width=".5"/>'
+                     f'<circle r="17" fill="{T["accent"]}"/><circle r="14.5" fill="none" stroke="{T["bg"]}" stroke-width=".6"/>'
+                     f'<text y="6.5" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="19" fill="{T["bg"]}">{esc(o["name"][0].upper())}</text>'
+                     f'<text y="39" text-anchor="middle" font-family="{SERIF}" font-size="13" fill="{T["ink"]}">{esc(label)}</text>'
+                     f'<text y="52" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="10.5" fill="{T["muted"]}">{esc(o["lang"] or "my repo")}</text></g></g>')
         g.append('</g>')
         bodies.insert(0, "".join(g))
     if retro:
@@ -547,9 +574,9 @@ def orrery(T, d):
     body = (starfield(T, random.Random(5), W, H, 150 if not retro else 90, lambda x, y: math.hypot(x - cx, y - cy) < 60) +
             outer + "".join(orbits) + sun + "".join(bodies) +
             heading(T, 32, 44, "An orrery of merged work" if retro else "The orrery", "Every body is a project that merged my work.", plate=3) +
-            (f'<text x="32" y="{86 if retro else 84}" font-family="{SERIF}" font-style="italic" font-size="13" fill="{T["accent"]}">{"My own repos ride the red ellipse." if paper else "The inner ring is my own."}</text>' if own else "") +
+            (f'<text x="32" y="{86 if retro else 84}" font-family="{SERIF}" font-style="italic" font-size="13" fill="{T["accent"]}">{"Inside the red ellipse: my own repos." if paper else "The inner ring is my own."}</text>' if own else "") +
             f'<text x="{W - 32}" y="44" text-anchor="end" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{T["muted"]}">size: the project’s and its organization’s stars</text>'
-            f'<text x="{W - 32}" y="62" text-anchor="end" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{T["muted"]}">inner orbits: more merges</text>')
+            f'<text x="{W - 32}" y="62" text-anchor="end" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{T["muted"]}">closer in: more merges</text>')
     defs = "".join(clips) + f'<clipPath id="me"><circle cx="{cx}" cy="{cy}" r="36"/></clipPath>'
     return frame(T, W, H, body, f"An orrery of the {len(counts)} open-source projects that merged Swastik's pull requests", defs)
 
