@@ -53,4 +53,4 @@
 <sub>Click, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
 
 
-<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last run Nov 9, 2026, 16:36 UTC · also in the <a href="../README.md">retro</a> and <a href="../alt/README-paper.md">paper</a> editions</sub></p>
+<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last run Nov 9, 2026, 16:44 UTC · also in the <a href="../README.md">retro</a> and <a href="../alt/README-paper.md">paper</a> editions</sub></p>

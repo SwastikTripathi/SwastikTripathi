@@ -729,7 +729,7 @@ def pinned_card(T, i, o, x, y, cw, tilt):
     about = re.sub(r"\s*[—–]\s*", ", ", o["about"]) or f"A personal {o['lang'] or 'side'} project."
     chars = int((cw - 32) / 5.3)
     lines = wrap(about, chars, 4)
-    name = o["name"] if len(o["name"]) * 8 < cw - 30 else o["name"][:int((cw - 38) / 8)] + "…"
+    name = o["name"] if len(o["name"]) * 7.4 < cw - 30 else o["name"][:int((cw - 38) / 7.4)] + "…"
     meta = "  ·  ".join(t for t in [f"touched {when:%b %Y}", "private" if o["private"] else f"★ {o['stars']}" if o["stars"] else ""] if t)
     seal = (f'<g transform="translate({x + 34:.1f} {y + 40})"><g>'
             
@@ -755,7 +755,7 @@ def pinned_card(T, i, o, x, y, cw, tilt):
             f'<rect x="{x + 4:.1f}" y="{y + 4}" width="{cw - 8:.1f}" height="{ch - 8}" fill="none" stroke="{ink}" stroke-width=".3"/>'
             + seal + text +
             f'<circle cx="{mx:.1f}" cy="{y + 2}" r="5" fill="{acc}" stroke="{ink}" stroke-width=".6"/><circle cx="{mx - 1.5:.1f}" cy="{y + .5}" r="1.4" fill="{card_bg}" opacity=".8"/>')
-    swing = 1.6 + (i % 2) * .5
+    swing = .9 + (i % 2) * .1  # tilt + swing < 1.8 degrees: the corners stay inside the compartment
     sway = (f'<animateTransform attributeName="transform" type="rotate" dur="{5.5 + i * .9:.1f}s" repeatCount="indefinite" '
             f'values="{tilt - swing:.2f} {mx:.1f} {y};{tilt + swing:.2f} {mx:.1f} {y};{tilt - swing:.2f} {mx:.1f} {y}" '
             f'calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1" begin="-{i * 1.7:.1f}s"/>')
@@ -773,7 +773,7 @@ def workshop(T, d, part=None):
     retro = T.get("print")
     n = max(len(own), 1)
     rng = random.Random(len(own) * 13 + 5)
-    tilts = [rng.uniform(-1.8, 1.8) for _ in own]
+    tilts = [rng.uniform(-.8, .8) for _ in own]
     head = heading(T, 32, 44, "The workshop" if retro else "Workshop", "Things I make on my own. Click a card to visit it.", plate=4)
     if part == "head":
         return frame(T, W, WORKSHOP_HEAD, head, "The workshop: my own projects")
@@ -781,8 +781,8 @@ def workshop(T, d, part=None):
         cell = W / n
         H = 262
         first, last = part == 0, part == n - 1
-        x = (32 if first else 14) if n > 1 else 32
-        cw = cell - x - ((32 if last else 14) if n > 1 else 32)
+        x = 20  # 222px card at 1.8 degrees moves ~7px at the bottom, plus a 4px shadow: clear of the 5px rules
+        cw = cell - 2 * x
         o = own[part]
         return frame(T, round(cell, 2), H, pinned_card(T, part, o, x, 18, cw, tilts[part]), o["name"] + ": " + o["about"],
                      sides=("l" if first else "") + ("r" if last else ""))
