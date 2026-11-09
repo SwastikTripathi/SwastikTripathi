@@ -1,6 +1,7 @@
-# Your own repos for the Workshop plate, one per line (up to 4). Optional note after a "|"
-# replaces the GitHub description, e.g.:  gita-ai | Ask the Bhagavad Gita a question.
-cute-whiplash
-gita-ai
-thera-ai
-GenAILeaderboard
+# Your own repos for the Workshop plate, one per line (up to 4):  repo | Title on the card | note
+# Title and note are optional (defaults: the repo name and its GitHub description). Private repos work:
+# a local build saves their details to data/my-repos.json, which the 6-hourly GitHub Action reuses.
+Cicada | Cicada | Human evaluation for AI teams: rubric rating, QA review and rater payouts.
+wheres-my-money | Where's My Money | An iPhone expense tracker that reads your bank SMS.
+ghost-in-the-wrist | Ghost in the Wrist | The screen a screenless fitness tracker never came with: recovery, strain, sleep.
+lightstick | lightstick | Every public voice about your brand in one queue, with a checked reply for each.

@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["build/**", ".github/workflows/**", "data/theme.txt"]
+    paths: ["build/**", ".github/workflows/**", "data/theme.txt", "data/my-repos.txt"]
   issues:
     types: [opened, labeled]
 

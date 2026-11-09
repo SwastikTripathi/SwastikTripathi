@@ -109,6 +109,36 @@ def review_states():
     return {n["url"]: "DRAFT" if n.get("isDraft") else words.get(n.get("reviewDecision"), "OPEN") for n in nodes if n}
 
 
+def own_repos():
+    """The Workshop cards, from data/my-repos.txt ("repo | Title | note"). Private repos are fine: whatever a local
+    build can read is saved to data/my-repos.json, and the GitHub Action (whose token can't see private repos)
+    falls back to that."""
+    cache_path = os.path.join(DATA, "my-repos.json")
+    try:
+        cache = json.load(open(cache_path))
+    except (OSError, ValueError):
+        cache = {}
+    try:
+        lines = [l.strip() for l in open(os.path.join(DATA, "my-repos.txt")) if l.strip() and not l.startswith("#")]
+    except OSError:
+        lines = []
+    own = []
+    for line in lines[:4]:
+        name, title, note = (x.strip() for x in (line.split("|") + ["", ""])[:3])
+        try:
+            info = gh(f"repos/{ME}/{name}")
+            cache[name] = {"lang": info.get("language") or "", "stars": info["stargazers_count"], "private": info["private"],
+                           "description": info.get("description") or "", "pushed": info.get("pushed_at") or info["created_at"]}
+        except RuntimeError:
+            if name not in cache:
+                continue
+        c = cache[name]
+        own.append({"name": title or name, "lang": c["lang"], "stars": c["stars"], "private": c["private"],
+                    "about": note or c["description"], "pushed": c["pushed"]})
+    json.dump(cache, open(cache_path, "w"), indent=1, sort_keys=True)
+    return own
+
+
 def collect():
     merged = search(f"author:{ME} is:pr is:merged")
     unmerged = search(f"author:{ME} is:pr is:closed is:unmerged")
@@ -134,20 +164,7 @@ def collect():
     states = review_states()
     for p in open_:
         p["state"] = states.get(p["url"], "OPEN")
-    own = []
-    try:
-        names = [l.strip() for l in open(os.path.join(DATA, "my-repos.txt")) if l.strip() and not l.startswith("#")]
-        names = [tuple(x.strip() for x in (l.split("|", 1) + [""])[:2]) for l in names]
-    except OSError:
-        names = []
-    for name, note in names[:4]:
-        try:
-            info = gh(f"repos/{ME}/{name}")
-        except RuntimeError:
-            continue
-        if not info.get("private"):
-            own.append({"name": info["name"], "url": info["html_url"], "lang": info.get("language") or "", "stars": info["stargazers_count"],
-                        "about": note or info.get("description") or "", "pushed": info.get("pushed_at") or info["created_at"]})
+    own = own_repos()
     me = gh(f"users/{ME}")
     return {"merged": sorted(merged, key=lambda p: p["when"], reverse=True), "unmerged": unmerged,
             "open": [p for p in open_ if p["repo"] in repos], "repos": repos,
@@ -715,9 +732,9 @@ def workshop(T, d):
         when = dt.datetime.fromisoformat(o["pushed"].replace("Z", "+00:00"))
         about = re.sub(r"\s*[—–]\s*", ", ", o["about"]) or f"A personal {o['lang'] or 'side'} project."
         chars = int((cw - 32) / 5.3)
-        lines = wrap(about, chars, 3)
+        lines = wrap(about, chars, 4)
         name = o["name"] if len(o["name"]) * 8 < cw - 30 else o["name"][:int((cw - 38) / 8)] + "…"
-        meta = "  ·  ".join(t for t in [f"touched {when:%b %Y}", f"★ {o['stars']}" if o["stars"] else ""] if t)
+        meta = "  ·  ".join(t for t in [f"touched {when:%b %Y}", "private" if o["private"] else f"★ {o['stars']}" if o["stars"] else ""] if t)
         seal = (f'<g transform="translate({x + 34:.1f} {y + 40})">'
                 f'<g><animateTransform attributeName="transform" type="rotate" values="0;{6 if i % 2 else -6};0" dur="{7 + i}s" repeatCount="indefinite"/>'
                 + "".join(f'<circle cx="{19 * math.cos(math.radians(a)):.1f}" cy="{19 * math.sin(math.radians(a)):.1f}" r="3.2" fill="{acc}"/>' for a in range(0, 360, 30))
