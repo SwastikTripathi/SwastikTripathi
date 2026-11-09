@@ -138,7 +138,7 @@ def own_repos():
         if logo:
             mime = "image/svg+xml" if logo.endswith(".svg") else "image/png"
             logo = f"data:{mime};base64," + base64.b64encode(open(logo, "rb").read()).decode()
-        own.append({"url": url, "logo": logo, "name": title or name, "lang": c["lang"], "stars": c["stars"], "private": c["private"],
+        own.append({"url": url or f"https://github.com/{ME}/{name}", "logo": logo, "name": title or name, "lang": c["lang"], "stars": c["stars"], "private": c["private"],
                     "about": note or c["description"], "pushed": c["pushed"]})
     json.dump(cache, open(cache_path, "w"), indent=1, sort_keys=True)
     return own
