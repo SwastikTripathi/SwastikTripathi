@@ -41,6 +41,17 @@ THEMES = {
 }
 # paper: the whole profile as one continuous engraved folio (Swastik liked the retro star chart)
 THEMES["paper"] = dict(THEMES["retro"], name="paper", bg="#efe6d0", folio=True)
+# github: the retro atlas drawn straight onto GitHub's own background, in both of GitHub's modes, so the README
+# has no edges. One README (alt/README-github.md, or README.md) shows "github" in light mode and "github-dark" in
+# dark mode through <picture>. No paper grain (it would tint the background), and hairline rules instead of bands.
+THEMES["github"] = dict(THEMES["retro"], name="github", bg="#ffffff", rule="#1f2328", ink="#1f2328", muted="#59636e",
+                        faint="#d1d9e0", accent="#bc4c2e", accent2="#0969da", card="#f6f8fa",
+                        shades=["#1f2328", "#bc4c2e", "#0969da", "#818b98", "#d1d9e0", "#59636e"],
+                        badge="ffffff", badge_logo="1f2328", blend=True, pair="github-dark")
+THEMES["github-dark"] = dict(THEMES["github"], name="github-dark", bg="#0d1117", rule="#e8dcc4", ink="#e8dcc4",
+                             muted="#9d9483", faint="#2a313c", accent="#e8805f", accent2="#79b8ff", card="#151b23",
+                             shades=["#e8dcc4", "#e8805f", "#79b8ff", "#8b8476", "#3d4450", "#b9ad96"],
+                             badge="0d1117", badge_logo="e8dcc4", pair=None, hidden=True)
 LANG_ORDER = ["TypeScript", "Swift", "Python", "Go", "JavaScript", "Jupyter Notebook"]
 
 
@@ -305,12 +316,27 @@ def sheet_rules(T, w, h, sides):
             f'<rect x="5" y="5" width="{w - 10}" height="{h - 10}" fill="none" stroke="{ink}" stroke-width=".5"/>')
 
 
+def blend_rules(T, w, h, sides):
+    """For the github editions: the page is the paper. Plates are separated by a hairline with a small diamond at
+    the top of each plate; the link row and the workshop cells get nothing (no seams to hide on a matching page)."""
+    if sides not in ("lr", "lrb"):
+        return ""
+    ink, acc = T["faint"], T["accent"]
+    m = w / 2
+    return (f'<line x1="40" y1="8" x2="{m - 16}" y2="8" stroke="{ink}" stroke-width="1"/>'
+            f'<line x1="{m + 16}" y1="8" x2="{w - 40}" y2="8" stroke="{ink}" stroke-width="1"/>'
+            f'<path d="M{m - 5} 8 l5 -5 l5 5 l-5 5 z" fill="{acc}"/>'
+            f'<circle cx="{m - 11}" cy="8" r="1.4" fill="{T["muted"]}"/><circle cx="{m + 11}" cy="8" r="1.4" fill="{T["muted"]}"/>')
+
+
 def frame(T, w, h, body, label, defs="", sides="lr"):
     if T.get("folio"):  # stacked into one sheet by folio()
         return {"w": w, "h": h, "body": body, "defs": defs, "label": label}
     retro = T.get("print")
     rx = 0 if T.get("sheet") else 4 if retro else 16
-    if T.get("sheet"):
+    if T.get("blend"):
+        rules = blend_rules(T, w, h, sides)
+    elif T.get("sheet"):
         rules = f'<rect width="{w}" height="{h}" filter="url(#paper)" opacity=".9"/>{sheet_rules(T, w, h, sides)}'
     else:
         rules = (f'<rect width="{w}" height="{h}" filter="url(#paper)" opacity=".9"/>'
@@ -744,7 +770,7 @@ def pinned_card(T, i, o, x, y, cw, tilt):
     see the mouse, so the board moves on its own instead of on hover)."""
     retro = T.get("print")
     ink, acc, muted = T["ink"], T["accent"], T["muted"]
-    card_bg = "#f8f2e4" if retro else "#141415"
+    card_bg = T.get("card") or ("#f8f2e4" if retro else "#141415")
     ch = 222
     mx = x + cw / 2
     when = dt.datetime.fromisoformat(o["pushed"].replace("Z", "+00:00"))
@@ -1254,7 +1280,7 @@ def readme(T, d, visitors, prefix, active):
         ("web", SITE, "swastiktripathi.dev"), ("linkedin", LINKEDIN, "LinkedIn"),
         ("x", "https://x.com/" + X_HANDLE, "X"), ("github", f"https://github.com/{ME}", "GitHub")])
     up = "../" if prefix else ""
-    editions = " and ".join(f'<a href="{up}{"README.md" if n == active else f"alt/README-{n}.md"}">{n}</a>' for n in THEMES if n != T["name"])
+    editions = " and ".join(f'<a href="{up}{"README.md" if n == active else f"alt/README-{n}.md"}">{n}</a>' for n in THEMES if n != T["name"] and not THEMES[n].get("hidden"))
     boards = f"""<details>
 <summary><b>Open the boards</b>: every pull request above, with links</summary>
 <br>
@@ -1274,7 +1300,12 @@ def readme(T, d, visitors, prefix, active):
 </details>"""
     if T.get("sheet") and not T.get("folio"):
         # one <p>, every image align="top" (no baseline gap) and joined by <br>: the slices meet edge to edge
-        img = lambda name, alt, w="100%": f'<img src="{a(name)}" width="{w}" align="top" alt="{alt}">'
+        def img(name, alt, w="100%"):
+            tag = f'<img src="{a(name)}" width="{w}" align="top" alt="{alt}">'
+            if not T.get("pair"):
+                return tag
+            dark = f"{prefix}assets/{T['pair']}/{name}"  # GitHub serves this one in dark mode
+            return f'<picture><source media="(prefers-color-scheme: dark)" srcset="{dark}">{tag}</picture>'
         link = lambda href, inner: f'<a href="{href}">{inner}</a>'
         strip = "".join(link(href, img(f"strip-{key}.svg", alt, f"{pct}%")) for key, href, alt, pct in STRIP(T))
         rows = [link(SITE, img("hero.svg", f"Swastik Tripathi. {len(merged)} pull requests merged across {len(projects)} open-source projects.")),
@@ -1339,7 +1370,7 @@ def read_theme():
         t = open(os.path.join(DATA, "theme.txt")).read().strip()
     except OSError:
         t = "classy"
-    return t if t in THEMES else "classy"
+    return t if t in THEMES and not THEMES[t].get("hidden") else "classy"
 
 
 def load_visitors():
@@ -1413,6 +1444,8 @@ def main():
                 files[f"strip-{key}.svg"] = pill(T, key, texts[key], strip=(round(840 * pct / 100, 1), 50), sides=sides)
         for fname, text in files.items():
             open(os.path.join(folder, fname), "w").write(text)
+        if T.get("hidden"):  # github-dark: only images, shown by the github README in dark mode
+            continue
         if name == active:
             open(os.path.join(ROOT, "README.md"), "w").write(readme(T, d, visitors, "", active))
         else:
