@@ -447,12 +447,13 @@ def ledger(T, d):
 
 def orrery(T, d):
     paper = T["name"] in ("paper", "retro")  # the planisphere orrery
-    W, H, cx, cy = (840, 840 if T.get("sheet") else 820, 420, 444) if paper else (840, 760, 420, 404)
+    W, H, cx, cy = (840, 890, 420, 474) if paper else (840, 760, 420, 404)
+    rim = 374 if paper else 336  # planisphere: heavy rim at rim, thin circle at rim - 16, numerals at rim + 18
     retro = T.get("print")
     merged, repos = d["merged"], d["repos"]
     counts = Counter(p["repo"] for p in merged)
     order = sorted(counts, key=lambda r: (-counts[r], -repos[r]["stars"]))
-    radii, durs = [168, 240, 304], [130, 200, 280]
+    radii, durs = ([212, 262, 310] if paper else [168, 240, 304]), [240, 240, 240]
     n = len(order)
     sizes = [max(1, round(n * r / sum(radii))) for r in radii[:2]]
     rings = [order[:sizes[0]], order[sizes[0]:sizes[0] + sizes[1]], order[sizes[0] + sizes[1]:]]
@@ -461,16 +462,22 @@ def orrery(T, d):
     pid = 0
     dash = ' stroke-dasharray="1 4"' if retro else ""
     italic = 'font-style="italic" ' if retro else ""
-    for R, members, dur in zip(radii, rings, durs):
+    # every project gets its own angle, alternating rings, and all rings turn together: no two planets ever meet
+    slot, queues = {}, [list(m) for m in rings]
+    while any(queues):
+        for q in queues:
+            if q:
+                slot[q.pop(0)] = len(slot)
+    a0 = rng.uniform(0, 360)
+    for k, (R, members, dur) in enumerate(zip(radii, rings, durs)):
         if not members:
             continue
         orbits.append(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" stroke="{T["ink"] if retro else T["rule"]}" '
                       f'stroke-width="{.6 if retro else 1}"{dash}/>')
-        a0 = rng.uniform(0, 360)
         g = [f'<g>{spin(cx, cy, dur)}']
         for j, slug in enumerate(members):
             info = repos[slug]
-            a = math.radians(a0 + j * 360 / len(members))
+            a = math.radians(a0 + slot[slug] * 360 / n)
             px, py = cx + R * math.cos(a), cy + R * math.sin(a)
             # size: the project's own stars and the stars of the organization behind it
             w = .55 * math.log10(max(info["stars"], 500)) + .45 * math.log10(max(info["owner_stars"], 500))
@@ -493,20 +500,28 @@ def orrery(T, d):
         g.append('</g>')
         bodies.append("".join(g))
     own = d.get("own", [])
+    ERX, ERY, TILT, EDUR = 160, 80, -21, 160
     if own:
-        R, dur = 100, 90
-        orbits.append(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" stroke="{T["accent"]}" stroke-width=".7" stroke-dasharray="2 3"/>')
-        g = [f'<g>{spin(cx, cy, dur)}']
+        g = [f'<g>{spin(cx, cy, EDUR)}']
+        if paper:  # the ecliptic: an ellipse that turns, carrying my repos fixed on it
+            g.append(f'<ellipse cx="{cx}" cy="{cy}" rx="{ERX}" ry="{ERY}" transform="rotate({TILT} {cx} {cy})" fill="none" '
+                     f'stroke="{T["accent"]}" stroke-width="1.1" stroke-dasharray="6 4"/>')
+        else:
+            g.append(f'<circle cx="{cx}" cy="{cy}" r="100" fill="none" stroke="{T["accent"]}" stroke-width=".7" stroke-dasharray="2 3"/>')
         for j, o in enumerate(own):
-            a = math.radians(-90 + 45 + j * 360 / len(own))
-            px, py = cx + R * math.cos(a), cy + R * math.sin(a)
-            label = o["name"] if len(o["name"]) <= 16 else o["name"][:15] + "…"
-            g.append(f'<g transform="translate({px:.1f} {py:.1f})"><g>{spin(0, 0, dur, reverse=True)}'
-                     f'<circle r="11" fill="{T["bg"]}" stroke="{T["accent"]}" stroke-width="1.1"/><circle r="14" fill="none" stroke="{T["accent"]}" stroke-width=".4"/>'
-                     f'<text y="4.5" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="13" fill="{T["accent"]}">{esc(o["name"][0].upper())}</text>'
-                     f'<text y="28" text-anchor="middle" font-family="{SERIF}" font-size="11" fill="{T["ink"]}">{esc(label)}</text></g></g>')
+            t = math.radians(45 + j * 360 / len(own))
+            if paper:
+                ex, ey, tr = ERX * math.cos(t), ERY * math.sin(t), math.radians(TILT)
+                px, py = cx + ex * math.cos(tr) - ey * math.sin(tr), cy + ex * math.sin(tr) + ey * math.cos(tr)
+            else:
+                px, py = cx + 100 * math.cos(t), cy + 100 * math.sin(t)
+            label = o["name"] if len(o["name"]) <= 18 else o["name"][:17] + "…"
+            g.append(f'<g transform="translate({px:.1f} {py:.1f})"><g>{spin(0, 0, EDUR, reverse=True)}'
+                     f'<circle r="12" fill="{T["bg"]}" stroke="{T["accent"]}" stroke-width="1.2"/><circle r="15.5" fill="none" stroke="{T["accent"]}" stroke-width=".4"/>'
+                     f'<text y="5" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="14" fill="{T["accent"]}">{esc(o["name"][0].upper())}</text>'
+                     f'<text y="31" text-anchor="middle" font-family="{SERIF}" font-size="12" fill="{T["ink"]}">{esc(label)}</text></g></g>')
         g.append('</g>')
-        bodies.append("".join(g))
+        bodies.insert(0, "".join(g))
     if retro:
         rays = "".join(f'<line x1="{cx + 44 * math.cos(math.radians(a)):.1f}" y1="{cy + 44 * math.sin(math.radians(a)):.1f}" '
                        f'x2="{cx + (58 if a % 30 == 0 else 51) * math.cos(math.radians(a)):.1f}" y2="{cy + (58 if a % 30 == 0 else 51) * math.sin(math.radians(a)):.1f}" '
@@ -521,20 +536,18 @@ def orrery(T, d):
     outer = (f'<circle cx="{cx}" cy="{cy}" r="336" fill="none" stroke="{T["ink"] if retro else T["rule"]}" stroke-width="{.8 if retro else 1}"/>'
              + ticks(T, cx, cy, 336, 5, 30, 4, 10))
     if paper:  # drawn like a planisphere: heavy rim, tick band, numerals, meridians, a dashed ecliptic
-        outer = (f'<circle cx="{cx}" cy="{cy}" r="352" fill="none" stroke="{T["ink"]}" stroke-width="2.2"/>'
-                 f'<circle cx="{cx}" cy="{cy}" r="336" fill="none" stroke="{T["ink"]}" stroke-width=".7"/>'
-                 + ticks(T, cx, cy, 352, 5, 15, 6, 16, width=.9)
-                 + "".join(f'<text x="{cx + 370 * math.cos(math.radians(a - 90)):.1f}" y="{cy + 370 * math.sin(math.radians(a - 90)) + 5:.1f}" '
+        outer = (f'<circle cx="{cx}" cy="{cy}" r="{rim}" fill="none" stroke="{T["ink"]}" stroke-width="2.2"/>'
+                 f'<circle cx="{cx}" cy="{cy}" r="{rim - 16}" fill="none" stroke="{T["ink"]}" stroke-width=".7"/>'
+                 + ticks(T, cx, cy, rim, 5, 15, 6, 16, width=.9)
+                 + "".join(f'<text x="{cx + (rim + 18) * math.cos(math.radians(a - 90)):.1f}" y="{cy + (rim + 18) * math.sin(math.radians(a - 90)) + 5:.1f}" '
                            f'text-anchor="middle" font-family="{SERIF}" font-size="14" fill="{T["ink"]}">{roman(a // 30 + 1)}</text>' for a in range(0, 360, 30))
                  + "".join(f'<line x1="{cx + 64 * math.cos(math.radians(a)):.1f}" y1="{cy + 64 * math.sin(math.radians(a)):.1f}" '
-                           f'x2="{cx + 336 * math.cos(math.radians(a)):.1f}" y2="{cy + 336 * math.sin(math.radians(a)):.1f}" stroke="{T["faint"]}" stroke-width=".7"/>'
-                           for a in range(0, 360, 30))
-                 + f'<ellipse cx="{cx}" cy="{cy}" rx="330" ry="122" transform="rotate(-21 {cx} {cy})" fill="none" stroke="{T["accent"]}" '
-                   f'stroke-width="1.1" stroke-dasharray="6 4"/>')
+                           f'x2="{cx + (rim - 16) * math.cos(math.radians(a)):.1f}" y2="{cy + (rim - 16) * math.sin(math.radians(a)):.1f}" stroke="{T["faint"]}" stroke-width=".7"/>'
+                           for a in range(0, 360, 30)))
     body = (starfield(T, random.Random(5), W, H, 150 if not retro else 90, lambda x, y: math.hypot(x - cx, y - cy) < 60) +
             outer + "".join(orbits) + sun + "".join(bodies) +
             heading(T, 32, 44, "An orrery of merged work" if retro else "The orrery", "Every body is a project that merged my work.", plate=3) +
-            (f'<text x="32" y="{86 if retro else 84}" font-family="{SERIF}" font-style="italic" font-size="13" fill="{T["accent"]}">The inner ring is my own.</text>' if own else "") +
+            (f'<text x="32" y="{86 if retro else 84}" font-family="{SERIF}" font-style="italic" font-size="13" fill="{T["accent"]}">{"My own repos ride the red ellipse." if paper else "The inner ring is my own."}</text>' if own else "") +
             f'<text x="{W - 32}" y="44" text-anchor="end" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{T["muted"]}">size: the project’s and its organization’s stars</text>'
             f'<text x="{W - 32}" y="62" text-anchor="end" font-family="{SERIF}" font-style="italic" font-size="12.5" fill="{T["muted"]}">inner orbits: more merges</text>')
     defs = "".join(clips) + f'<clipPath id="me"><circle cx="{cx}" cy="{cy}" r="36"/></clipPath>'
