@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/coveragepy.png?size=40" width="18" height="18"> | coveragepy/coveragepy | [fix: restart coverage from parent config in patch=fork child process](https://github.com/coveragepy/coveragepy/pull/2342) | Nov 10 |
+| <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Fix `&lt;&lt;` before an implicit member being read as a generic](https://github.com/nicklockwood/SwiftFormat/pull/2899) | Nov 10 |
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Microsoft Edge] Fix history and collection search with apostrophes](https://github.com/raycast/extensions/pull/33032) | Nov 10 |
 | <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): separate HTML5 block elements and table headers in htmlToText](https://github.com/apify/crawlee/pull/4366) | Nov 9 |
 | <img src="https://github.com/webpro-nl.png?size=40" width="18" height="18"> | webpro-nl/knip | [Find JavaScript plugins, middleware and app.config in the Nuxt plugin](https://github.com/webpro-nl/knip/pull/2312) | Nov 9 |
 | <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Don't treat a property named open as a modifier of the next declaration](https://github.com/nicklockwood/SwiftFormat/pull/2897) | Nov 9 |
 | <img src="https://github.com/usememos.png?size=40" width="18" height="18"> | usememos/memos | [fix(markdown): keep a space at hard line breaks in snippets and count characters when stopping early](https://github.com/usememos/memos/pull/6534) | Nov 9 |
-| <img src="https://github.com/trentm.png?size=40" width="18" height="18"> | trentm/python-markdown2 | [perf: speed up _unescape_special_chars for large documents](https://github.com/trentm/python-markdown2/pull/748) | Nov 9 |
-| <img src="https://github.com/un-ts.png?size=40" width="18" height="18"> | un-ts/eslint-plugin-import-x | [fix(core): don't load the optional @typescript-eslint/utils peer at runtime](https://github.com/un-ts/eslint-plugin-import-x/pull/599) | Nov 8 |
-| <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Don't leave an empty comment line for an over-indented `*/` in `blockComments`](https://github.com/nicklockwood/SwiftFormat/pull/2888) | Nov 8 |
 
 **Open pull requests**
 
