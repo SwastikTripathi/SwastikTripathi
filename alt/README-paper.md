@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Media Converter] Fix WebP and AVIF with FFmpeg builds that lack libwebp or libaom-av1](https://github.com/raycast/extensions/pull/33225) | Nov 11 |
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Browser History] Fix history search with apostrophes](https://github.com/raycast/extensions/pull/33161) | Nov 11 |
-| <img src="https://github.com/apple.png?size=40" width="18" height="18"> | apple/swift-collections | [[BasicContainers] Un-deprecate withKeys while keys is miscompiled](https://github.com/apple/swift-collections/pull/844) | Nov 10 |
-| <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Fix comparison before a generic type member being read as a generic](https://github.com/nicklockwood/SwiftFormat/pull/2900) | Nov 10 |
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Zoo] Upgrade openai from v4 to v7](https://github.com/raycast/extensions/pull/33292) | Nov 10 |
-| <img src="https://github.com/coveragepy.png?size=40" width="18" height="18"> | coveragepy/coveragepy | [fix: restart coverage from parent config in patch=fork child process](https://github.com/coveragepy/coveragepy/pull/2342) | Nov 10 |
-| <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Fix `&lt;&lt;` before an implicit member being read as a generic](https://github.com/nicklockwood/SwiftFormat/pull/2899) | Nov 10 |
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Opera] Fix history search with apostrophes and LIKE wildcards](https://github.com/raycast/extensions/pull/33266) | Nov 11 |
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Tmux Sessioner] Fix switching sessions and windows on tmux 3.8](https://github.com/raycast/extensions/pull/33226) | Nov 11 |
+| <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Fix yodaConditions splitting a macro from its trailing closure](https://github.com/nicklockwood/SwiftFormat/pull/2905) | Nov 11 |
+| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): extract URLs with internationalized top-level domains](https://github.com/apify/crawlee/pull/4380) | Nov 11 |
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(cli): validate the layout of every project in a multi-project workspace](https://github.com/likec4/likec4/pull/3512) | Nov 11 |
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(language-server): accept files that start with a UTF-8 BOM](https://github.com/likec4/likec4/pull/3519) | Nov 11 |
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(core): apply relation customization in deployment views](https://github.com/likec4/likec4/pull/3521) | Nov 11 |
 
 **Open pull requests**
 
@@ -27,9 +27,9 @@
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(xychart): label each bar series with its own values when showDataLabel is true](https://github.com/mermaid-js/mermaid/pull/8521) | Oct 23 | Approved |
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(commonDb): decode HTML entities in title and accessibility text](https://github.com/mermaid-js/mermaid/pull/8560) | Oct 26 | Approved |
 | <img src="https://github.com/slidevjs.png?size=40" width="18" height="18"> | slidevjs/slidev | [docs: add Cloudflare Workers to the hosting guide](https://github.com/slidevjs/slidev/pull/2830) | Nov 9 | Open |
-| <img src="https://github.com/Leaflet.png?size=40" width="18" height="18"> | Leaflet/Leaflet | [Fix NaN distance between antipodal points](https://github.com/Leaflet/Leaflet/pull/10561) | Nov 11 | Reviewing |
 | <img src="https://github.com/jestjs.png?size=40" width="18" height="18"> | jestjs/jest | [fix(expect): include iterableEquality in ArrayContaining, ArrayOf, ObjectContaining](https://github.com/jestjs/jest/pull/16512) | Oct 20 | Open |
 | <img src="https://github.com/ManimCommunity.png?size=40" width="18" height="18"> | ManimCommunity/manim | [Fix ManimColor.from_hsv and from_hsl with integer components](https://github.com/ManimCommunity/manim/pull/5126) | Nov 11 | Reviewing |
+| <img src="https://github.com/drizzle-team.png?size=40" width="18" height="18"> | drizzle-team/drizzle-orm | [fix(sqlite-core): place WHERE before DO NOTHING in onConflictDoNothing](https://github.com/drizzle-team/drizzle-orm/pull/6551) | Oct 20 | Open |
 
 </details>
 
