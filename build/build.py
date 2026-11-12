@@ -1100,27 +1100,26 @@ def ledger_book(T, d):
 
 
 def register(T, rows, title, sub, plate, stamps):
-    """A hand-ruled register: date, project, pull request, and a rubber stamp."""
+    """A hand-ruled register: project, pull request, and a rubber stamp."""
     W = 840
     ink = T["ink"]
     H = 120 + len(rows) * 34 + 16
     out = [heading(T, 32, 44, title, sub, plate=plate)]
-    cols = [(34, "DATE"), (112, "PROJECT"), (268, "PULL REQUEST")]
+    cols = [(34, "PROJECT"), (196, "PULL REQUEST")]
     out += [f'<text x="{x}" y="98" font-family="{SERIF}" font-size="10.5" letter-spacing="2.4" fill="{T["muted"]}">{t}</text>' for x, t in cols]
     out.append(f'<line x1="28" y1="106" x2="812" y2="106" stroke="{ink}" stroke-width=".9"/><line x1="28" y1="109" x2="812" y2="109" stroke="{ink}" stroke-width=".4"/>'
-               f'<line x1="100" y1="84" x2="100" y2="{H - 14}" stroke="{T["accent"]}" stroke-width=".7"/>')
+               f'<line x1="182" y1="84" x2="182" y2="{H - 14}" stroke="{T["accent"]}" stroke-width=".7"/>')
     rng = random.Random(plate)
-    for i, (date, project, text, status) in enumerate(rows):
+    for i, (project, text, status) in enumerate(rows):
         y = 136 + i * 34
         sw = max(92, len(status) * 8.6 + 22)
-        room = int((808 - sw - 290) / 6.6)
+        room = int((808 - sw - 218) / 6.6)
         text = text if len(text) <= room else text[:room - 2].rsplit(" ", 1)[0] + "…"
         out.append(f'<line x1="28" y1="{y + 11}" x2="812" y2="{y + 11}" stroke="{T["faint"]}" stroke-width=".7"/>'
                    f'<clipPath id="row{plate}{i}"><rect x="28" y="{y - 22}" width="680" height="32">{intro("width", 0, 680, .3 + i * .16, .8)}</rect></clipPath>'
                    f'<g clip-path="url(#row{plate}{i})">'
-                   f'<text x="34" y="{y}" font-family="{SERIF}" font-style="italic" font-size="13.5" fill="{T["muted"]}">{esc(date)}</text>'
-                   f'<text x="112" y="{y}" font-family="{SERIF}" font-size="14" fill="{ink}">{esc(project[:20])}</text>'
-                   f'<text x="268" y="{y}" font-family="{SERIF}" font-size="13.5" fill="{ink}">{esc(text)}</text></g>')
+                   f'<text x="34" y="{y}" font-family="{SERIF}" font-size="14" fill="{ink}">{esc(project[:20])}</text>'
+                   f'<text x="196" y="{y}" font-family="{SERIF}" font-size="13.5" fill="{ink}">{esc(text)}</text></g>')
         if status:
             color = stamps.get(status, T["accent"])
             tilt = rng.uniform(-5, 5)
@@ -1133,15 +1132,13 @@ def register(T, rows, title, sub, plate, stamps):
 
 
 def register_arrivals(T, d):
-    rows = [(dt.datetime.fromisoformat(p["when"].replace("Z", "+00:00")).strftime("%-d %b"),
-             short(d["repos"][p["repo"]]["name"]), headline(p["title"]), "MERGED") for p in d["merged"][:7]]
+    rows = [(short(d["repos"][p["repo"]]["name"]), headline(p["title"]), "MERGED") for p in d["merged"][:7]]
     return register(T, rows, "Register of merged pull requests", "The latest merged into other projects.", 5, {})
 
 
 def register_departures(T, d):
-    rows = [(dt.datetime.fromisoformat(p["created"].replace("Z", "+00:00")).strftime("%-d %b"), short(d["repos"][p["repo"]]["name"]),
-             headline(p["title"]), p.get("state", "OPEN")) for p in review_queue(d)]
-    return register(T, rows or [("", "", "None open right now.", "")], "Register of open pull requests",
+    rows = [(short(d["repos"][p["repo"]]["name"]), headline(p["title"]), p.get("state", "OPEN")) for p in review_queue(d)]
+    return register(T, rows or [("", "None open right now.", "")], "Register of open pull requests",
                     "Waiting on maintainers, with the review status GitHub shows.", 6, state_colors(T))
 
 
