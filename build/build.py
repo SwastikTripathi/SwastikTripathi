@@ -1099,11 +1099,11 @@ def ledger_book(T, d):
     return {"w": W, "h": H, "body": "".join(out), "defs": "", "label": "The ledger"}
 
 
-def register(T, rows, title, sub, plate, stamps):
+def register(T, rows, title, sub, plate, stamps, more=True):
     """A hand-ruled register: project, pull request, and a rubber stamp."""
     W = 840
     ink = T["ink"]
-    H = 120 + len(rows) * 34 + 16
+    H = 120 + len(rows) * 34 + 16 + (30 if more else 0)
     out = [heading(T, 32, 44, title, sub, plate=plate)]
     cols = [(34, "PROJECT"), (196, "PULL REQUEST")]
     out += [f'<text x="{x}" y="98" font-family="{SERIF}" font-size="10.5" letter-spacing="2.4" fill="{T["muted"]}">{t}</text>' for x, t in cols]
@@ -1128,6 +1128,10 @@ def register(T, rows, title, sub, plate, stamps):
                        f'<rect x="{sx:.1f}" y="{y - 17}" width="{sw:.1f}" height="22" rx="3" fill="none" stroke="{color}" stroke-width="1.5"/>'
                        f'<rect x="{sx + 3:.1f}" y="{y - 14}" width="{sw - 6:.1f}" height="16" rx="2" fill="none" stroke="{color}" stroke-width=".5"/>'
                        f'<text x="{mid:.1f}" y="{y - 2}" text-anchor="middle" font-family="{SERIF}" font-size="10.5" letter-spacing="2" fill="{color}">{esc(status)}</text></g>')
+    if more:  # a vertical ellipsis under each column: the list goes on
+        y0 = 136 + (len(rows) - 1) * 34 + 11
+        dots = "".join(f'<circle cx="{x}" cy="{y0 + k}" r="1.5" fill="{T["muted"]}"/>' for x in (38, 200) for k in (9, 16, 23))
+        out.append(f'<g>{intro("opacity", 0, 1, .5 + len(rows) * .16, .4)}{dots}</g>')
     return {"w": W, "h": H, "body": "".join(out), "defs": "", "label": title}
 
 
@@ -1139,7 +1143,7 @@ def register_arrivals(T, d):
 def register_departures(T, d):
     rows = [(short(d["repos"][p["repo"]]["name"]), headline(p["title"]), p.get("state", "OPEN")) for p in review_queue(d)]
     return register(T, rows or [("", "None open right now.", "")], "Register of open pull requests",
-                    "Waiting on maintainers, with the review status GitHub shows.", 6, state_colors(T))
+                    "Waiting on maintainers, with the review status GitHub shows.", 6, state_colors(T), more=bool(rows))
 
 
 def visitors_chart(T, visitors):
