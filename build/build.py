@@ -874,9 +874,15 @@ def milestones(T, d):
     for i, (label, big_text, small, ring) in enumerate(medals):
         cx, cy, R = 32 + step * (i + .5), 146, 58
         pid = f"ring{i}"
-        defs.append(f'<path id="{pid}" d="M{cx - R + 7:.1f} {cy} a{R - 7} {R - 7} 0 1 1 {2 * (R - 7)} 0 a{R - 7} {R - 7} 0 1 1 {-2 * (R - 7)} 0"/>')
-        ring_text = f"{ring} · {ring} · ".upper()
-        circ = 2 * math.pi * (R - 7)
+        rr = R - 10  # text baseline: caps (about 6px tall) stay clear of the outer rings
+        defs.append(f'<path id="{pid}" d="M{cx - rr:.1f} {cy} a{rr} {rr} 0 1 1 {2 * rr} 0 a{rr} {rr} 0 1 1 {-2 * rr} 0"/>')
+        circ = 2 * math.pi * rr
+        # repeat the inscription only as often as it fits at its natural width, so textLength only ever adds
+        # spacing (squeezing made letters overlap); one copy that is still too long gets a smaller font
+        unit = f"{ring} · ".upper()
+        reps = max(1, int(circ * 1.08 // (len(unit) * 8.2 * .7)))  # up to 8% tighter than natural is fine
+        fs = min(9.4, circ / (reps * len(unit) * .7))  # short inscriptions grow a little instead of spreading out
+        ring_text = unit * reps
         if retro:
             frame_ = (f'<circle cx="{cx:.1f}" cy="{cy}" r="{R}" fill="{T["bg"]}" stroke="{T["ink"]}" stroke-width="1.4"/>'
                       f'<circle cx="{cx:.1f}" cy="{cy}" r="{R - 3}" fill="none" stroke="{T["ink"]}" stroke-width=".5"/>'
@@ -891,7 +897,7 @@ def milestones(T, d):
         out.append(
             f'<g{tilt}><g>{intro("opacity", 0, 1, .2 + i * .15, .9)}{frame_}'
             f'<g>{spin(cx, cy, 50 + i * 6, reverse=i % 2 == 1)}'
-            f'<text font-family="{ring_font}" font-size="8.2" fill="{ring_fill}" textLength="{circ - 6:.0f}" lengthAdjust="spacing">'
+            f'<text font-family="{ring_font}" font-size="{fs:.1f}" fill="{ring_fill}" textLength="{circ - 2:.0f}" lengthAdjust="spacing">'
             f'<textPath href="#{pid}">{esc(ring_text)}</textPath></text></g>'
             f'<text x="{cx:.1f}" y="{cy + 7}" text-anchor="middle" font-family="{SERIF}" font-size="{size}" fill="{num_fill}">{esc(big_text)}</text>'
             f'<text x="{cx:.1f}" y="{cy + 23}" text-anchor="middle" font-family="{SERIF}" font-style="italic" font-size="10" fill="{T["muted"]}">{esc(small[:16])}</text>'
