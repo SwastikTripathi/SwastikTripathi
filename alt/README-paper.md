@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Iridium] Fix history search with apostrophes](https://github.com/raycast/extensions/pull/33291) | Nov 13 |
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Cerebras] Fix crash on launch by upgrading the OpenAI SDK to v7](https://github.com/raycast/extensions/pull/33267) | Nov 13 |
 | <img src="https://github.com/coveragepy.png?size=40" width="18" height="18"> | coveragepy/coveragepy | [fix: read config files that start with a UTF-8 byte order mark](https://github.com/coveragepy/coveragepy/pull/2388) | Nov 12 |
 | <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Opera] Fix history search with apostrophes and LIKE wildcards](https://github.com/raycast/extensions/pull/33266) | Nov 11 |
 | <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Tmux Sessioner] Fix switching sessions and windows on tmux 3.8](https://github.com/raycast/extensions/pull/33226) | Nov 11 |
 | <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Fix yodaConditions splitting a macro from its trailing closure](https://github.com/nicklockwood/SwiftFormat/pull/2905) | Nov 11 |
 | <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): extract URLs with internationalized top-level domains](https://github.com/apify/crawlee/pull/4380) | Nov 11 |
-| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(cli): validate the layout of every project in a multi-project workspace](https://github.com/likec4/likec4/pull/3512) | Nov 11 |
-| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(language-server): accept files that start with a UTF-8 BOM](https://github.com/likec4/likec4/pull/3519) | Nov 11 |
 
 **Open pull requests**
 
@@ -37,4 +37,4 @@
 <sub>Click, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
 
 
-<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 12, 2026 · also in the <a href="../alt/README-classy.md">classy</a> and <a href="../alt/README-retro.md">retro</a> and <a href="../README.md">github</a> editions</sub></p>
+<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 13, 2026 · also in the <a href="../alt/README-classy.md">classy</a> and <a href="../alt/README-retro.md">retro</a> and <a href="../README.md">github</a> editions</sub></p>
