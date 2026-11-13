@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 Place a note written after a folder line under that folder in @startfiles](https://github.com/plantuml/plantuml/pull/3007) | Nov 13 |
+| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): parse sitemaps whose elements use a namespace prefix](https://github.com/apify/crawlee/pull/4393) | Nov 13 |
+| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): ignore microdata inside &lt;template> elements](https://github.com/apify/crawlee/pull/4400) | Nov 13 |
+| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): skip &lt;template> content in htmlToText](https://github.com/apify/crawlee/pull/4399) | Nov 13 |
+| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 Allow declaring a metaclass, protocol, struct, exception, stereotype or entity after its first use](https://github.com/plantuml/plantuml/pull/3006) | Nov 13 |
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Himalaya] Support Himalaya CLI v2](https://github.com/raycast/extensions/pull/33314) | Nov 13 |
 | <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Iridium] Fix history search with apostrophes](https://github.com/raycast/extensions/pull/33291) | Nov 13 |
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Cerebras] Fix crash on launch by upgrading the OpenAI SDK to v7](https://github.com/raycast/extensions/pull/33267) | Nov 13 |
-| <img src="https://github.com/coveragepy.png?size=40" width="18" height="18"> | coveragepy/coveragepy | [fix: read config files that start with a UTF-8 byte order mark](https://github.com/coveragepy/coveragepy/pull/2388) | Nov 12 |
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Opera] Fix history search with apostrophes and LIKE wildcards](https://github.com/raycast/extensions/pull/33266) | Nov 11 |
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Tmux Sessioner] Fix switching sessions and windows on tmux 3.8](https://github.com/raycast/extensions/pull/33226) | Nov 11 |
-| <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Fix yodaConditions splitting a macro from its trailing closure](https://github.com/nicklockwood/SwiftFormat/pull/2905) | Nov 11 |
-| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): extract URLs with internationalized top-level domains](https://github.com/apify/crawlee/pull/4380) | Nov 11 |
 
 **Open pull requests**
 
