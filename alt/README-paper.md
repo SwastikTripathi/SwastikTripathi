@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): give PlantUML elements unique names](https://github.com/likec4/likec4/pull/3550) | Nov 14 |
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): emit valid D2 for keyword names, ${ in labels and groups](https://github.com/likec4/likec4/pull/3549) | Nov 14 |
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): give Mermaid nodes unique names](https://github.com/likec4/likec4/pull/3551) | Nov 14 |
+| <img src="https://github.com/Tonejs.png?size=40" width="18" height="18"> | Tonejs/Tone.js | [fix(Time): carry sixteenths that round up to 4 into the next beat](https://github.com/Tonejs/Tone.js/pull/1540) | Nov 14 |
+| <img src="https://github.com/Leaflet.png?size=40" width="18" height="18"> | Leaflet/Leaflet | [Round sub-meter scale distances down instead of up to 1 m](https://github.com/Leaflet/Leaflet/pull/10583) | Nov 14 |
 | <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Read custom target paths from Package.swift for project index modules](https://github.com/nicklockwood/SwiftFormat/pull/2910) | Nov 14 |
 | <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Check the project index before hoisting access control onto an extension](https://github.com/nicklockwood/SwiftFormat/pull/2911) | Nov 14 |
-| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 Place a note written after a folder line under that folder in @startfiles](https://github.com/plantuml/plantuml/pull/3007) | Nov 13 |
-| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): parse sitemaps whose elements use a namespace prefix](https://github.com/apify/crawlee/pull/4393) | Nov 13 |
-| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): ignore microdata inside &lt;template> elements](https://github.com/apify/crawlee/pull/4400) | Nov 13 |
-| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): skip &lt;template> content in htmlToText](https://github.com/apify/crawlee/pull/4399) | Nov 13 |
-| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 Allow declaring a metaclass, protocol, struct, exception, stereotype or entity after its first use](https://github.com/plantuml/plantuml/pull/3006) | Nov 13 |
 
 **Open pull requests**
 
@@ -28,8 +28,8 @@
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(commonDb): decode HTML entities in title and accessibility text](https://github.com/mermaid-js/mermaid/pull/8560) | Oct 26 | Approved |
 | <img src="https://github.com/usememos.png?size=40" width="18" height="18"> | usememos/memos | [fix(web): show 1.0 MB instead of 1024.0 KB at file size unit boundaries](https://github.com/usememos/memos/pull/6560) | Nov 14 | Reviewing |
 | <img src="https://github.com/slidevjs.png?size=40" width="18" height="18"> | slidevjs/slidev | [docs: add Cloudflare Workers to the hosting guide](https://github.com/slidevjs/slidev/pull/2830) | Nov 9 | Open |
-| <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: round Color components to the nearest byte in toNumber and toHex](https://github.com/pixijs/pixijs/pull/12400) | Nov 14 | Reviewing |
-| <img src="https://github.com/Leaflet.png?size=40" width="18" height="18"> | Leaflet/Leaflet | [Round sub-meter scale distances down instead of up to 1 m](https://github.com/Leaflet/Leaflet/pull/10583) | Nov 14 | Reviewing |
+| <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: round Color components to the nearest byte in toNumber and toHex](https://github.com/pixijs/pixijs/pull/12400) | Nov 14 | Approved |
+| <img src="https://github.com/jestjs.png?size=40" width="18" height="18"> | jestjs/jest | [fix(expect): include iterableEquality in ArrayContaining, ArrayOf, ObjectContaining](https://github.com/jestjs/jest/pull/16512) | Oct 20 | Open |
 
 </details>
 
