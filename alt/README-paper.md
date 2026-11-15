@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
-| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): give PlantUML elements unique names](https://github.com/likec4/likec4/pull/3550) | Nov 14 |
-| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): emit valid D2 for keyword names, ${ in labels and groups](https://github.com/likec4/likec4/pull/3549) | Nov 14 |
-| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): give Mermaid nodes unique names](https://github.com/likec4/likec4/pull/3551) | Nov 14 |
-| <img src="https://github.com/Tonejs.png?size=40" width="18" height="18"> | Tonejs/Tone.js | [fix(Time): carry sixteenths that round up to 4 into the next beat](https://github.com/Tonejs/Tone.js/pull/1540) | Nov 14 |
-| <img src="https://github.com/Leaflet.png?size=40" width="18" height="18"> | Leaflet/Leaflet | [Round sub-meter scale distances down instead of up to 1 m](https://github.com/Leaflet/Leaflet/pull/10583) | Nov 14 |
-| <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Read custom target paths from Package.swift for project index modules](https://github.com/nicklockwood/SwiftFormat/pull/2910) | Nov 14 |
-| <img src="https://github.com/nicklockwood.png?size=40" width="18" height="18"> | nicklockwood/SwiftFormat | [Check the project index before hoisting access control onto an extension](https://github.com/nicklockwood/SwiftFormat/pull/2911) | Nov 14 |
+| <img src="https://github.com/playcanvas.png?size=40" width="18" height="18"> | playcanvas/engine | [Fix math.lerpAngle for angles more than one turn apart](https://github.com/playcanvas/engine/pull/10005) | Nov 15 |
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Deepseek Quick Actions] Use current DeepSeek models and upgrade openai to v7](https://github.com/raycast/extensions/pull/33402) | Nov 15 |
+| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 Apply the style to object, map and JSON stereotypes](https://github.com/plantuml/plantuml/pull/3013) | Nov 15 |
+| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 Apply the arrow style to state transition labels drawn as nodes](https://github.com/plantuml/plantuml/pull/3012) | Nov 15 |
+| <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Clamp color components in Color3/Color4 toHexString](https://github.com/BabylonJS/Babylon.js/pull/19162) | Nov 15 |
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): keep Mermaid labels with backticks parseable](https://github.com/likec4/likec4/pull/3548) | Nov 15 |
+| <img src="https://github.com/TriliumNext.png?size=40" width="18" height="18"> | TriliumNext/Trilium | [fix(client): show sizes that round up to 1024 in the next unit](https://github.com/TriliumNext/Trilium/pull/12645) | Nov 15 |
 
 **Open pull requests**
 
