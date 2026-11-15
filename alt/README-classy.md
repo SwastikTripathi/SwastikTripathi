@@ -39,7 +39,7 @@
 | <img src="https://github.com/usememos.png?size=40" width="18" height="18"> | usememos/memos | [fix(web): show 1.0 MB instead of 1024.0 KB at file size unit boundaries](https://github.com/usememos/memos/pull/6560) | Nov 14 | Reviewing |
 | <img src="https://github.com/slidevjs.png?size=40" width="18" height="18"> | slidevjs/slidev | [docs: add Cloudflare Workers to the hosting guide](https://github.com/slidevjs/slidev/pull/2830) | Nov 9 | Open |
 | <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: round Color components to the nearest byte in toNumber and toHex](https://github.com/pixijs/pixijs/pull/12400) | Nov 14 | Approved |
-| <img src="https://github.com/jestjs.png?size=40" width="18" height="18"> | jestjs/jest | [fix(expect): include iterableEquality in ArrayContaining, ArrayOf, ObjectContaining](https://github.com/jestjs/jest/pull/16512) | Oct 20 | Open |
+| <img src="https://github.com/exo-explore.png?size=40" width="18" height="18"> | exo-explore/exo | [fix(dashboard): show 1 MB instead of 1024 KB in byte sizes](https://github.com/exo-explore/exo/pull/2616) | Nov 15 | Reviewing |
 
 </details>
 
@@ -53,4 +53,4 @@
 <sub>Click, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
 
 
-<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 14, 2026 · also in the <a href="../alt/README-retro.md">retro</a> and <a href="../alt/README-paper.md">paper</a> and <a href="../README.md">github</a> editions</sub></p>
+<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 15, 2026 · also in the <a href="../alt/README-retro.md">retro</a> and <a href="../alt/README-paper.md">paper</a> and <a href="../README.md">github</a> editions</sub></p>
