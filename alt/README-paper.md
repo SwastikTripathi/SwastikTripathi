@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 Wrap empty package titles at the style MaximumWidth](https://github.com/plantuml/plantuml/pull/3018) | Nov 17 |
+| <img src="https://github.com/playcanvas.png?size=40" width="18" height="18"> | playcanvas/supersplat | [Stop timeline playback on the last frame when loop is off](https://github.com/playcanvas/supersplat/pull/1111) | Nov 17 |
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Workflowy Inbox] Show formatted node names as plain text](https://github.com/raycast/extensions/pull/33621) | Nov 17 |
 | <img src="https://github.com/TriliumNext.png?size=40" width="18" height="18"> | TriliumNext/Trilium | [fix(client): show 1 km instead of 1,000 m for distances that round up](https://github.com/TriliumNext/Trilium/pull/12672) | Nov 16 |
 | <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Drafts] Fix search with apostrophes and single-line titles](https://github.com/raycast/extensions/pull/33366) | Nov 16 |
 | <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Comet] Fix history search with underscores, percent signs and quotes](https://github.com/raycast/extensions/pull/33443) | Nov 16 |
 | <img src="https://github.com/playcanvas.png?size=40" width="18" height="18"> | playcanvas/engine | [Fix Color.toString alpha when it rounds up to 0x10](https://github.com/playcanvas/engine/pull/10032) | Nov 16 |
-| <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Decode base64 data URLs as UTF-8 when loading text](https://github.com/BabylonJS/Babylon.js/pull/19169) | Nov 16 |
-| <img src="https://github.com/un-ts.png?size=40" width="18" height="18"> | un-ts/eslint-plugin-import-x | [feat(no-useless-path-segments): report useless index in aliased imports](https://github.com/un-ts/eslint-plugin-import-x/pull/596) | Nov 16 |
-| <img src="https://github.com/mrdoob.png?size=40" width="18" height="18"> | mrdoob/three.js | [Color: Keep the hue of the other color in `lerpHSL()` when one is gray.](https://github.com/mrdoob/three.js/pull/35544) | Nov 16 |
 
 **Open pull requests**
 
