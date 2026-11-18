@@ -11,25 +11,25 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/TriliumNext.png?size=40" width="18" height="18"> | TriliumNext/Trilium | [fix(export): use a longer Markdown fence for code that contains a fence](https://github.com/TriliumNext/Trilium/pull/12697) | Nov 18 |
+| <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Fix JXG.rgbParser for rgba() alpha with more than one decimal](https://github.com/jsxgraph/jsxgraph/pull/851) | Nov 18 |
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Apple Mail] Escape the query in list-addresses](https://github.com/raycast/extensions/pull/33673) | Nov 18 |
+| <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Fix JXG.hsv2rgb returning white for zero saturation](https://github.com/jsxgraph/jsxgraph/pull/850) | Nov 18 |
 | <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Wrap the hue in Color3.HSVtoRGBToRef](https://github.com/BabylonJS/Babylon.js/pull/19170) | Nov 17 |
 | <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 Wrap empty package titles at the style MaximumWidth](https://github.com/plantuml/plantuml/pull/3018) | Nov 17 |
 | <img src="https://github.com/playcanvas.png?size=40" width="18" height="18"> | playcanvas/supersplat | [Stop timeline playback on the last frame when loop is off](https://github.com/playcanvas/supersplat/pull/1111) | Nov 17 |
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Workflowy Inbox] Show formatted node names as plain text](https://github.com/raycast/extensions/pull/33621) | Nov 17 |
-| <img src="https://github.com/TriliumNext.png?size=40" width="18" height="18"> | TriliumNext/Trilium | [fix(client): show 1 km instead of 1,000 m for distances that round up](https://github.com/TriliumNext/Trilium/pull/12672) | Nov 16 |
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Drafts] Fix search with apostrophes and single-line titles](https://github.com/raycast/extensions/pull/33366) | Nov 16 |
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Comet] Fix history search with underscores, percent signs and quotes](https://github.com/raycast/extensions/pull/33443) | Nov 16 |
 
 **Open pull requests**
 
 | | Project | Pull request | Opened | Review |
 |:-:|---|---|---|---|
 | <img src="https://github.com/excalidraw.png?size=40" width="18" height="18"> | excalidraw/excalidraw | [fix(editor): don't snap dragged frames to their children's old positions](https://github.com/excalidraw/excalidraw/pull/12166) | Sep 25 | Reviewing |
-| <img src="https://github.com/mrdoob.png?size=40" width="18" height="18"> | mrdoob/three.js | [Vector4: Clamp w in setAxisAngleFromQuaternion().](https://github.com/mrdoob/three.js/pull/35584) | Nov 18 | Open |
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(xychart): label each bar series with its own values when showDataLabel is true](https://github.com/mermaid-js/mermaid/pull/8521) | Oct 23 | Approved |
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(commonDb): decode HTML entities in title and accessibility text](https://github.com/mermaid-js/mermaid/pull/8560) | Oct 26 | Approved |
 | <img src="https://github.com/usememos.png?size=40" width="18" height="18"> | usememos/memos | [fix(web): show 1.0 MB instead of 1024.0 KB at file size unit boundaries](https://github.com/usememos/memos/pull/6560) | Nov 14 | Reviewing |
 | <img src="https://github.com/slidevjs.png?size=40" width="18" height="18"> | slidevjs/slidev | [docs: add Cloudflare Workers to the hosting guide](https://github.com/slidevjs/slidev/pull/2830) | Nov 9 | Open |
 | <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: round Color components to the nearest byte in toNumber and toHex](https://github.com/pixijs/pixijs/pull/12400) | Nov 14 | Approved |
+| <img src="https://github.com/exo-explore.png?size=40" width="18" height="18"> | exo-explore/exo | [fix(dashboard): show 1 MB instead of 1024 KB in byte sizes](https://github.com/exo-explore/exo/pull/2616) | Nov 15 | Reviewing |
 
 </details>
 
