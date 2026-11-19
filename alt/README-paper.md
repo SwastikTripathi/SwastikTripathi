@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Fix JXG.Math.Statistics.percentile returning NaN for P = 100](https://github.com/jsxgraph/jsxgraph/pull/853) | Nov 19 |
+| <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Fix percentile and boxplot results for data with NaN entries](https://github.com/jsxgraph/jsxgraph/pull/852) | Nov 19 |
 | <img src="https://github.com/TriliumNext.png?size=40" width="18" height="18"> | TriliumNext/Trilium | [fix(export): use a longer Markdown fence for code that contains a fence](https://github.com/TriliumNext/Trilium/pull/12697) | Nov 18 |
 | <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Fix JXG.rgbParser for rgba() alpha with more than one decimal](https://github.com/jsxgraph/jsxgraph/pull/851) | Nov 18 |
 | <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Apple Mail] Escape the query in list-addresses](https://github.com/raycast/extensions/pull/33673) | Nov 18 |
 | <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Fix JXG.hsv2rgb returning white for zero saturation](https://github.com/jsxgraph/jsxgraph/pull/850) | Nov 18 |
 | <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Wrap the hue in Color3.HSVtoRGBToRef](https://github.com/BabylonJS/Babylon.js/pull/19170) | Nov 17 |
-| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 Wrap empty package titles at the style MaximumWidth](https://github.com/plantuml/plantuml/pull/3018) | Nov 17 |
-| <img src="https://github.com/playcanvas.png?size=40" width="18" height="18"> | playcanvas/supersplat | [Stop timeline playback on the last frame when loop is off](https://github.com/playcanvas/supersplat/pull/1111) | Nov 17 |
 
 **Open pull requests**
 
