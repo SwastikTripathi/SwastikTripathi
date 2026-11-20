@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Fix JXG.rgb2hex for fractional and out of range channels](https://github.com/jsxgraph/jsxgraph/pull/855) | Nov 20 |
+| <img src="https://github.com/foliojs.png?size=40" width="18" height="18"> | foliojs/pdfkit | [Fix smooth curve control points and zero-radius arcs in SVG paths](https://github.com/foliojs/pdfkit/pull/1868) | Nov 20 |
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[HoudahSpot Search] Escape quotes and backslashes in the search term](https://github.com/raycast/extensions/pull/33759) | Nov 20 |
+| <img src="https://github.com/dicebear.png?size=40" width="18" height="18"> | dicebear/dicebear | [fix(python): hash and sort lone surrogates like JS instead of raising](https://github.com/dicebear/dicebear/pull/575) | Nov 19 |
 | <img src="https://github.com/TriliumNext.png?size=40" width="18" height="18"> | TriliumNext/Trilium | [fix(canvas): disable Undo when another canvas note opens in the same tab](https://github.com/TriliumNext/Trilium/pull/12704) | Nov 19 |
 | <img src="https://github.com/openlayers.png?size=40" width="18" height="18"> | openlayers/openlayers | [Accept decimal values in rgb() color strings](https://github.com/openlayers/openlayers/pull/17746) | Nov 19 |
 | <img src="https://github.com/kurkle.png?size=40" width="18" height="18"> | kurkle/color | [fix(rgb): round percentages and fractional channels like browsers do](https://github.com/kurkle/color/pull/275) | Nov 19 |
-| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): order microdata properties reached through itemref in tree order](https://github.com/apify/crawlee/pull/4410) | Nov 19 |
-| <img src="https://github.com/antvis.png?size=40" width="18" height="18"> | antvis/util | [fix(path): follow the SVG spec for S/T control points and arc radii](https://github.com/antvis/util/pull/136) | Nov 19 |
-| <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Ignore the query string and fragment in GetMimeType](https://github.com/BabylonJS/Babylon.js/pull/19184) | Nov 19 |
-| <img src="https://github.com/mrdoob.png?size=40" width="18" height="18"> | mrdoob/three.js | [SVGLoader: Accept a comma and white space between polygon points.](https://github.com/mrdoob/three.js/pull/35606) | Nov 19 |
 
 **Open pull requests**
 
@@ -37,4 +37,4 @@
 <sub>Click, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
 
 
-<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 19, 2026 · also in the <a href="../alt/README-classy.md">classy</a> and <a href="../alt/README-retro.md">retro</a> and <a href="../README.md">github</a> editions</sub></p>
+<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 20, 2026 · also in the <a href="../alt/README-classy.md">classy</a> and <a href="../alt/README-retro.md">retro</a> and <a href="../README.md">github</a> editions</sub></p>
