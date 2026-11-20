@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/visgl.png?size=40" width="18" height="18"> | visgl/math.gl | [fix(core): vec3.slerp for parallel and opposite vectors](https://github.com/visgl/math.gl/pull/640) | Nov 20 |
+| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): decode downloadListOfUrls with every Node.js encoding](https://github.com/apify/crawlee/pull/4418) | Nov 20 |
+| <img src="https://github.com/Tonejs.png?size=40" width="18" height="18"> | Tonejs/Tone.js | [fix(PatternGenerator): play both values in alternateUp and alternateDown](https://github.com/Tonejs/Tone.js/pull/1546) | Nov 20 |
+| <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: round Color components to the nearest byte in toNumber and toHex](https://github.com/pixijs/pixijs/pull/12400) | Nov 20 |
+| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): read sitemap values split by CDATA sections or comments](https://github.com/apify/crawlee/pull/4434) | Nov 20 |
+| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): leave iframe, noembed and noframes fallback text out of htmlToText](https://github.com/apify/crawlee/pull/4435) | Nov 20 |
 | <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Fix JXG.rgb2hex for fractional and out of range channels](https://github.com/jsxgraph/jsxgraph/pull/855) | Nov 20 |
-| <img src="https://github.com/foliojs.png?size=40" width="18" height="18"> | foliojs/pdfkit | [Fix smooth curve control points and zero-radius arcs in SVG paths](https://github.com/foliojs/pdfkit/pull/1868) | Nov 20 |
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[HoudahSpot Search] Escape quotes and backslashes in the search term](https://github.com/raycast/extensions/pull/33759) | Nov 20 |
-| <img src="https://github.com/dicebear.png?size=40" width="18" height="18"> | dicebear/dicebear | [fix(python): hash and sort lone surrogates like JS instead of raising](https://github.com/dicebear/dicebear/pull/575) | Nov 19 |
-| <img src="https://github.com/TriliumNext.png?size=40" width="18" height="18"> | TriliumNext/Trilium | [fix(canvas): disable Undo when another canvas note opens in the same tab](https://github.com/TriliumNext/Trilium/pull/12704) | Nov 19 |
-| <img src="https://github.com/openlayers.png?size=40" width="18" height="18"> | openlayers/openlayers | [Accept decimal values in rgb() color strings](https://github.com/openlayers/openlayers/pull/17746) | Nov 19 |
-| <img src="https://github.com/kurkle.png?size=40" width="18" height="18"> | kurkle/color | [fix(rgb): round percentages and fractional channels like browsers do](https://github.com/kurkle/color/pull/275) | Nov 19 |
 
 **Open pull requests**
 
@@ -28,8 +28,8 @@
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(commonDb): decode HTML entities in title and accessibility text](https://github.com/mermaid-js/mermaid/pull/8560) | Oct 26 | Approved |
 | <img src="https://github.com/usememos.png?size=40" width="18" height="18"> | usememos/memos | [fix(web): show 1.0 MB instead of 1024.0 KB at file size unit boundaries](https://github.com/usememos/memos/pull/6560) | Nov 14 | Reviewing |
 | <img src="https://github.com/slidevjs.png?size=40" width="18" height="18"> | slidevjs/slidev | [docs: add Cloudflare Workers to the hosting guide](https://github.com/slidevjs/slidev/pull/2830) | Nov 9 | Open |
-| <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: round Color components to the nearest byte in toNumber and toHex](https://github.com/pixijs/pixijs/pull/12400) | Nov 14 | Approved |
 | <img src="https://github.com/exo-explore.png?size=40" width="18" height="18"> | exo-explore/exo | [fix(dashboard): show 1 MB instead of 1024 KB in byte sizes](https://github.com/exo-explore/exo/pull/2616) | Nov 15 | Reviewing |
+| <img src="https://github.com/jestjs.png?size=40" width="18" height="18"> | jestjs/jest | [fix(expect): include iterableEquality in ArrayContaining, ArrayOf, ObjectContaining](https://github.com/jestjs/jest/pull/16512) | Oct 20 | Open |
 
 </details>
 
