@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Keep Vector3.SlerpToRef on the sphere for opposite and nearly opposite vectors](https://github.com/BabylonJS/Babylon.js/pull/19207) | Nov 21 |
+| <img src="https://github.com/Jean-Tinland.png?size=40" width="18" height="18"> | Jean-Tinland/simple-bar | [Show 1mb instead of 1024kb in formatBytes](https://github.com/Jean-Tinland/simple-bar/pull/520) | Nov 21 |
 | <img src="https://github.com/visgl.png?size=40" width="18" height="18"> | visgl/math.gl | [fix(core): vec3.slerp for parallel and opposite vectors](https://github.com/visgl/math.gl/pull/640) | Nov 20 |
 | <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): decode downloadListOfUrls with every Node.js encoding](https://github.com/apify/crawlee/pull/4418) | Nov 20 |
 | <img src="https://github.com/Tonejs.png?size=40" width="18" height="18"> | Tonejs/Tone.js | [fix(PatternGenerator): play both values in alternateUp and alternateDown](https://github.com/Tonejs/Tone.js/pull/1546) | Nov 20 |
 | <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: round Color components to the nearest byte in toNumber and toHex](https://github.com/pixijs/pixijs/pull/12400) | Nov 20 |
 | <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): read sitemap values split by CDATA sections or comments](https://github.com/apify/crawlee/pull/4434) | Nov 20 |
-| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): leave iframe, noembed and noframes fallback text out of htmlToText](https://github.com/apify/crawlee/pull/4435) | Nov 20 |
-| <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Fix JXG.rgb2hex for fractional and out of range channels](https://github.com/jsxgraph/jsxgraph/pull/855) | Nov 20 |
 
 **Open pull requests**
 
