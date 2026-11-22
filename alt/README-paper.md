@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 teoz: don't widen the diagram for a `&` note over several participants beside a message it can't clear](https://github.com/plantuml/plantuml/pull/3027) | Nov 22 |
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Mozilla Firefox] Show the not installed screen instead of crashing when places.sqlite is missing](https://github.com/raycast/extensions/pull/33835) | Nov 22 |
+| <img src="https://github.com/pmndrs.png?size=40" width="18" height="18"> | pmndrs/postprocessing | [Fix angle getters that lost the sign of negative angles](https://github.com/pmndrs/postprocessing/pull/756) | Nov 22 |
+| <img src="https://github.com/pmndrs.png?size=40" width="18" height="18"> | pmndrs/react-spring | [fix(shared): pick the interpolation range from the mapped input](https://github.com/pmndrs/react-spring/pull/2659) | Nov 22 |
+| <img src="https://github.com/yairm210.png?size=40" width="18" height="18"> | yairm210/Unciv | [Refresh owned tile images when the owner's era or style changes](https://github.com/yairm210/Unciv/pull/16070) | Nov 22 |
 | <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Keep Vector3.SlerpToRef on the sphere for opposite and nearly opposite vectors](https://github.com/BabylonJS/Babylon.js/pull/19207) | Nov 21 |
 | <img src="https://github.com/Jean-Tinland.png?size=40" width="18" height="18"> | Jean-Tinland/simple-bar | [Show 1mb instead of 1024kb in formatBytes](https://github.com/Jean-Tinland/simple-bar/pull/520) | Nov 21 |
-| <img src="https://github.com/visgl.png?size=40" width="18" height="18"> | visgl/math.gl | [fix(core): vec3.slerp for parallel and opposite vectors](https://github.com/visgl/math.gl/pull/640) | Nov 20 |
-| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): decode downloadListOfUrls with every Node.js encoding](https://github.com/apify/crawlee/pull/4418) | Nov 20 |
-| <img src="https://github.com/Tonejs.png?size=40" width="18" height="18"> | Tonejs/Tone.js | [fix(PatternGenerator): play both values in alternateUp and alternateDown](https://github.com/Tonejs/Tone.js/pull/1546) | Nov 20 |
-| <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: round Color components to the nearest byte in toNumber and toHex](https://github.com/pixijs/pixijs/pull/12400) | Nov 20 |
-| <img src="https://github.com/apify.png?size=40" width="18" height="18"> | apify/crawlee | [fix(utils): read sitemap values split by CDATA sections or comments](https://github.com/apify/crawlee/pull/4434) | Nov 20 |
 
 **Open pull requests**
 
