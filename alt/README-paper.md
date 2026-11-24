@@ -11,25 +11,25 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 don't crash on a tab between the words of `left to right direction`](https://github.com/plantuml/plantuml/pull/3037) | Nov 24 |
+| <img src="https://github.com/visgl.png?size=40" width="18" height="18"> | visgl/math.gl | [fix(core): keep quat.getAngle from returning NaN for equal quaternions](https://github.com/visgl/math.gl/pull/735) | Nov 24 |
+| <img src="https://github.com/visgl.png?size=40" width="18" height="18"> | visgl/math.gl | [fix(core): keep Euler.fromRotationMatrix accurate near gimbal lock](https://github.com/visgl/math.gl/pull/734) | Nov 24 |
+| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 wbs/mindmap: don't crash when the first item is indented with a tab](https://github.com/plantuml/plantuml/pull/3036) | Nov 24 |
+| <img src="https://github.com/katspaugh.png?size=40" width="18" height="18"> | katspaugh/wavesurfer.js | [fix(Timeline): carry rounded seconds into the minute in default labels](https://github.com/katspaugh/wavesurfer.js/pull/4451) | Nov 24 |
+| <img src="https://github.com/playcanvas.png?size=40" width="18" height="18"> | playcanvas/engine | [Fix Vec2.angleTo returning non-zero angles for parallel vectors](https://github.com/playcanvas/engine/pull/10033) | Nov 24 |
 | <img src="https://github.com/yairm210.png?size=40" width="18" height="18"> | yairm210/Unciv | [Read the first entry of translation files that start with a UTF-8 byte order mark](https://github.com/yairm210/Unciv/pull/16087) | Nov 24 |
-| <img src="https://github.com/tonaljs.png?size=40" width="18" height="18"> | tonaljs/tonal | [docs(chord): update the chordScales example for the new scale families](https://github.com/tonaljs/tonal/pull/580) | Nov 23 |
-| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): write Markdown export titles as literal one-line headings](https://github.com/likec4/likec4/pull/3609) | Nov 23 |
-| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): escape quotes in metadata filter values of generated LikeC4](https://github.com/likec4/likec4/pull/3603) | Nov 23 |
-| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): escape the view title in PlantUML export](https://github.com/likec4/likec4/pull/3599) | Nov 23 |
-| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): keep &lt;, > and & in Draw.io labels through export and import](https://github.com/likec4/likec4/pull/3598) | Nov 23 |
-| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): export layouted edge routes to Draw.io](https://github.com/likec4/likec4/pull/3608) | Nov 23 |
 
 **Open pull requests**
 
 | | Project | Pull request | Opened | Review |
 |:-:|---|---|---|---|
 | <img src="https://github.com/excalidraw.png?size=40" width="18" height="18"> | excalidraw/excalidraw | [fix(editor): don't snap dragged frames to their children's old positions](https://github.com/excalidraw/excalidraw/pull/12166) | Sep 25 | Reviewing |
-| <img src="https://github.com/mrdoob.png?size=40" width="18" height="18"> | mrdoob/three.js | [Euler: Keep setFromRotationMatrix() accurate close to gimbal lock.](https://github.com/mrdoob/three.js/pull/35689) | Nov 24 | Open |
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(xychart): label each bar series with its own values when showDataLabel is true](https://github.com/mermaid-js/mermaid/pull/8521) | Oct 23 | Approved |
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(commonDb): decode HTML entities in title and accessibility text](https://github.com/mermaid-js/mermaid/pull/8560) | Oct 26 | Approved |
 | <img src="https://github.com/usememos.png?size=40" width="18" height="18"> | usememos/memos | [fix(web): show 1.0 MB instead of 1024.0 KB at file size unit boundaries](https://github.com/usememos/memos/pull/6560) | Nov 14 | Reviewing |
 | <img src="https://github.com/slidevjs.png?size=40" width="18" height="18"> | slidevjs/slidev | [docs: add Cloudflare Workers to the hosting guide](https://github.com/slidevjs/slidev/pull/2830) | Nov 9 | Open |
 | <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: keep roundShape corners from turning NaN at right angles](https://github.com/pixijs/pixijs/pull/12442) | Nov 21 | Reviewing |
+| <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: continue a path from the start of the subpath after closePath](https://github.com/pixijs/pixijs/pull/12443) | Nov 21 | Reviewing |
 
 </details>
 
