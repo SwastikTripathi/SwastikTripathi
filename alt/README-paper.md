@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/tonaljs.png?size=40" width="18" height="18"> | tonaljs/tonal | [docs(chord): update the chordScales example for the new scale families](https://github.com/tonaljs/tonal/pull/580) | Nov 23 |
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): write Markdown export titles as literal one-line headings](https://github.com/likec4/likec4/pull/3609) | Nov 23 |
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): escape quotes in metadata filter values of generated LikeC4](https://github.com/likec4/likec4/pull/3603) | Nov 23 |
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): escape the view title in PlantUML export](https://github.com/likec4/likec4/pull/3599) | Nov 23 |
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): keep &lt;, > and & in Draw.io labels through export and import](https://github.com/likec4/likec4/pull/3598) | Nov 23 |
+| <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(generators): export layouted edge routes to Draw.io](https://github.com/likec4/likec4/pull/3608) | Nov 23 |
 | <img src="https://github.com/antvis.png?size=40" width="18" height="18"> | antvis/G6 | [fix(utils): keep angle() from returning NaN for parallel vectors](https://github.com/antvis/G6/pull/7700) | Nov 23 |
-| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 teoz: don't widen the diagram for a `&` note over several participants beside a message it can't clear](https://github.com/plantuml/plantuml/pull/3027) | Nov 22 |
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Mozilla Firefox] Show the not installed screen instead of crashing when places.sqlite is missing](https://github.com/raycast/extensions/pull/33835) | Nov 22 |
-| <img src="https://github.com/pmndrs.png?size=40" width="18" height="18"> | pmndrs/postprocessing | [Fix angle getters that lost the sign of negative angles](https://github.com/pmndrs/postprocessing/pull/756) | Nov 22 |
-| <img src="https://github.com/pmndrs.png?size=40" width="18" height="18"> | pmndrs/react-spring | [fix(shared): pick the interpolation range from the mapped input](https://github.com/pmndrs/react-spring/pull/2659) | Nov 22 |
-| <img src="https://github.com/yairm210.png?size=40" width="18" height="18"> | yairm210/Unciv | [Refresh owned tile images when the owner's era or style changes](https://github.com/yairm210/Unciv/pull/16070) | Nov 22 |
-| <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Keep Vector3.SlerpToRef on the sphere for opposite and nearly opposite vectors](https://github.com/BabylonJS/Babylon.js/pull/19207) | Nov 21 |
 
 **Open pull requests**
 
@@ -37,4 +37,4 @@
 <sub>Click, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
 
 
-<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 23, 2026 · also in the <a href="../alt/README-classy.md">classy</a> and <a href="../alt/README-retro.md">retro</a> and <a href="../README.md">github</a> editions</sub></p>
+<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 24, 2026 · also in the <a href="../alt/README-classy.md">classy</a> and <a href="../alt/README-retro.md">retro</a> and <a href="../README.md">github</a> editions</sub></p>
