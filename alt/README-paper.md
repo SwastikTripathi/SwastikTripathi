@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Use Math.log10 for powers of ten in tick and grid steps](https://github.com/jsxgraph/jsxgraph/pull/859) | Nov 25 |
+| <img src="https://github.com/antvis.png?size=40" width="18" height="18"> | antvis/G2 | [fix(axis): keep significant digits of small tick values in prettyNumber](https://github.com/antvis/G2/pull/8591) | Nov 25 |
 | <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 don't crash on a tab between the words of `left to right direction`](https://github.com/plantuml/plantuml/pull/3037) | Nov 24 |
 | <img src="https://github.com/visgl.png?size=40" width="18" height="18"> | visgl/math.gl | [fix(core): keep quat.getAngle from returning NaN for equal quaternions](https://github.com/visgl/math.gl/pull/735) | Nov 24 |
 | <img src="https://github.com/visgl.png?size=40" width="18" height="18"> | visgl/math.gl | [fix(core): keep Euler.fromRotationMatrix accurate near gimbal lock](https://github.com/visgl/math.gl/pull/734) | Nov 24 |
 | <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 wbs/mindmap: don't crash when the first item is indented with a tab](https://github.com/plantuml/plantuml/pull/3036) | Nov 24 |
 | <img src="https://github.com/katspaugh.png?size=40" width="18" height="18"> | katspaugh/wavesurfer.js | [fix(Timeline): carry rounded seconds into the minute in default labels](https://github.com/katspaugh/wavesurfer.js/pull/4451) | Nov 24 |
-| <img src="https://github.com/playcanvas.png?size=40" width="18" height="18"> | playcanvas/engine | [Fix Vec2.angleTo returning non-zero angles for parallel vectors](https://github.com/playcanvas/engine/pull/10033) | Nov 24 |
-| <img src="https://github.com/yairm210.png?size=40" width="18" height="18"> | yairm210/Unciv | [Read the first entry of translation files that start with a UTF-8 byte order mark](https://github.com/yairm210/Unciv/pull/16087) | Nov 24 |
 
 **Open pull requests**
 
@@ -37,4 +37,4 @@
 <sub>Click, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
 
 
-<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 24, 2026 · also in the <a href="../alt/README-classy.md">classy</a> and <a href="../alt/README-retro.md">retro</a> and <a href="../README.md">github</a> editions</sub></p>
+<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 25, 2026 · also in the <a href="../alt/README-classy.md">classy</a> and <a href="../alt/README-retro.md">retro</a> and <a href="../README.md">github</a> editions</sub></p>
