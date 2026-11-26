@@ -11,19 +11,19 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Ignore NaN entries in JXG.Math.Statistics.median](https://github.com/jsxgraph/jsxgraph/pull/861) | Nov 26 |
 | <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 math/latex: read indented scale, dpi and color options from the trimmed line](https://github.com/plantuml/plantuml/pull/3048) | Nov 25 |
 | <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 preproc: accept tabs between the words of an !ifdef expression](https://github.com/plantuml/plantuml/pull/3049) | Nov 25 |
 | <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Keep Quaternion.toEulerAngles accurate close to a 90 degree pitch](https://github.com/BabylonJS/Babylon.js/pull/19220) | Nov 25 |
 | <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Use Math.log10 for powers of ten in tick and grid steps](https://github.com/jsxgraph/jsxgraph/pull/859) | Nov 25 |
 | <img src="https://github.com/antvis.png?size=40" width="18" height="18"> | antvis/G2 | [fix(axis): keep significant digits of small tick values in prettyNumber](https://github.com/antvis/G2/pull/8591) | Nov 25 |
 | <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 don't crash on a tab between the words of `left to right direction`](https://github.com/plantuml/plantuml/pull/3037) | Nov 24 |
-| <img src="https://github.com/visgl.png?size=40" width="18" height="18"> | visgl/math.gl | [fix(core): keep quat.getAngle from returning NaN for equal quaternions](https://github.com/visgl/math.gl/pull/735) | Nov 24 |
 
 **Open pull requests**
 
 | | Project | Pull request | Opened | Review |
 |:-:|---|---|---|---|
-| <img src="https://github.com/excalidraw.png?size=40" width="18" height="18"> | excalidraw/excalidraw | [fix(editor): don't snap dragged frames to their children's old positions](https://github.com/excalidraw/excalidraw/pull/12166) | Sep 25 | Reviewing |
+| <img src="https://github.com/excalidraw.png?size=40" width="18" height="18"> | excalidraw/excalidraw | [fix(editor): don't snap dragged frames to their children's old positions](https://github.com/excalidraw/excalidraw/pull/12166) | Sep 25 | Open |
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(xychart): label each bar series with its own values when showDataLabel is true](https://github.com/mermaid-js/mermaid/pull/8521) | Oct 23 | Approved |
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(commonDb): decode HTML entities in title and accessibility text](https://github.com/mermaid-js/mermaid/pull/8560) | Oct 26 | Approved |
 | <img src="https://github.com/usememos.png?size=40" width="18" height="18"> | usememos/memos | [fix(web): show 1.0 MB instead of 1024.0 KB at file size unit boundaries](https://github.com/usememos/memos/pull/6560) | Nov 14 | Reviewing |
@@ -37,4 +37,4 @@
 <sub>Click, write a short note if you like, and press <b>Create</b>. A GitHub Action puts your star in the sky within a minute; notes appear once I've read them.</sub></p>
 
 
-<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 25, 2026 · also in the <a href="../alt/README-classy.md">classy</a> and <a href="../alt/README-retro.md">retro</a> and <a href="../README.md">github</a> editions</sub></p>
+<p align="center"><sub>Rebuilt every six hours from the GitHub API by <a href="../build/build.py">build/build.py</a> · last rebuilt Nov 26, 2026 · also in the <a href="../alt/README-classy.md">classy</a> and <a href="../alt/README-retro.md">retro</a> and <a href="../README.md">github</a> editions</sub></p>
