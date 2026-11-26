@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Raycast Arcade] Center Wordle tile letters and show the statistics chart](https://github.com/raycast/extensions/pull/33989) | Nov 26 |
+| <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Turn PhotoDome/VideoDome faceForward to the camera's signed yaw](https://github.com/BabylonJS/Babylon.js/pull/19216) | Nov 26 |
 | <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Ignore NaN entries in JXG.Math.Statistics.median](https://github.com/jsxgraph/jsxgraph/pull/861) | Nov 26 |
 | <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 math/latex: read indented scale, dpi and color options from the trimmed line](https://github.com/plantuml/plantuml/pull/3048) | Nov 25 |
 | <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 preproc: accept tabs between the words of an !ifdef expression](https://github.com/plantuml/plantuml/pull/3049) | Nov 25 |
 | <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Keep Quaternion.toEulerAngles accurate close to a 90 degree pitch](https://github.com/BabylonJS/Babylon.js/pull/19220) | Nov 25 |
 | <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Use Math.log10 for powers of ten in tick and grid steps](https://github.com/jsxgraph/jsxgraph/pull/859) | Nov 25 |
-| <img src="https://github.com/antvis.png?size=40" width="18" height="18"> | antvis/G2 | [fix(axis): keep significant digits of small tick values in prettyNumber](https://github.com/antvis/G2/pull/8591) | Nov 25 |
-| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 don't crash on a tab between the words of `left to right direction`](https://github.com/plantuml/plantuml/pull/3037) | Nov 24 |
 
 **Open pull requests**
 
