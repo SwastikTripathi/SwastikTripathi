@@ -11,25 +11,25 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/visgl.png?size=40" width="18" height="18"> | visgl/math.gl | [fix(core): keep mat4.lookAt valid when up is parallel to the line of sight](https://github.com/visgl/math.gl/pull/762) | Nov 27 |
+| <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Make Curve3.ArcThru3Points full circles end once on the first point](https://github.com/BabylonJS/Babylon.js/pull/19228) | Nov 27 |
+| <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Keep snapped slider values inside the slider range](https://github.com/jsxgraph/jsxgraph/pull/862) | Nov 27 |
 | <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[System Monitor] Show sizes that round up to 1024 in the next unit](https://github.com/raycast/extensions/pull/34049) | Nov 27 |
 | <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Discogs] Encode the search text in the API query](https://github.com/raycast/extensions/pull/34050) | Nov 27 |
 | <img src="https://github.com/slidevjs.png?size=40" width="18" height="18"> | slidevjs/slidev | [docs: add Cloudflare Workers to the hosting guide](https://github.com/slidevjs/slidev/pull/2830) | Nov 27 |
 | <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Raycast Arcade] Center Wordle tile letters and show the statistics chart](https://github.com/raycast/extensions/pull/33989) | Nov 26 |
-| <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Turn PhotoDome/VideoDome faceForward to the camera's signed yaw](https://github.com/BabylonJS/Babylon.js/pull/19216) | Nov 26 |
-| <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Ignore NaN entries in JXG.Math.Statistics.median](https://github.com/jsxgraph/jsxgraph/pull/861) | Nov 26 |
-| <img src="https://github.com/plantuml.png?size=40" width="18" height="18"> | plantuml/plantuml | [🐛 math/latex: read indented scale, dpi and color options from the trimmed line](https://github.com/plantuml/plantuml/pull/3048) | Nov 25 |
 
 **Open pull requests**
 
 | | Project | Pull request | Opened | Review |
 |:-:|---|---|---|---|
 | <img src="https://github.com/excalidraw.png?size=40" width="18" height="18"> | excalidraw/excalidraw | [fix(editor): don't snap dragged frames to their children's old positions](https://github.com/excalidraw/excalidraw/pull/12166) | Sep 25 | Open |
-| <img src="https://github.com/mrdoob.png?size=40" width="18" height="18"> | mrdoob/three.js | [EllipseCurve: Fix full turns collapsing to a point.](https://github.com/mrdoob/three.js/pull/35721) | Nov 27 | Open |
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(xychart): label each bar series with its own values when showDataLabel is true](https://github.com/mermaid-js/mermaid/pull/8521) | Oct 23 | Approved |
 | <img src="https://github.com/mermaid-js.png?size=40" width="18" height="18"> | mermaid-js/mermaid | [fix(commonDb): decode HTML entities in title and accessibility text](https://github.com/mermaid-js/mermaid/pull/8560) | Oct 26 | Approved |
 | <img src="https://github.com/chartjs.png?size=40" width="18" height="18"> | chartjs/Chart.js | [fix: do not add a decimal to tick labels for floating point error in the step](https://github.com/chartjs/Chart.js/pull/12543) | Nov 27 | Reviewing |
 | <img src="https://github.com/usememos.png?size=40" width="18" height="18"> | usememos/memos | [fix(web): show 1.0 MB instead of 1024.0 KB at file size unit boundaries](https://github.com/usememos/memos/pull/6560) | Nov 14 | Reviewing |
 | <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: keep roundShape corners from turning NaN at right angles](https://github.com/pixijs/pixijs/pull/12442) | Nov 21 | Reviewing |
+| <img src="https://github.com/pixijs.png?size=40" width="18" height="18"> | pixijs/pixijs | [fix: continue a path from the start of the subpath after closePath](https://github.com/pixijs/pixijs/pull/12443) | Nov 21 | Reviewing |
 
 </details>
 
