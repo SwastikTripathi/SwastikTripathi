@@ -11,13 +11,13 @@
 
 | | Project | Pull request | Merged |
 |:-:|---|---|---|
+| <img src="https://github.com/visgl.png?size=40" width="18" height="18"> | visgl/math.gl | [feat(core): add parseUTF8NumberExact for Number()-exact UTF-8 parsing](https://github.com/visgl/math.gl/pull/761) | Nov 28 |
 | <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(language-server): check 'Diff has no changes' on the merged diff](https://github.com/likec4/likec4/pull/3632) | Nov 28 |
 | <img src="https://github.com/likec4.png?size=40" width="18" height="18"> | likec4/likec4 | [fix(core): match dynamic view steps by source path in compare views](https://github.com/likec4/likec4/pull/3633) | Nov 28 |
 | <img src="https://github.com/visgl.png?size=40" width="18" height="18"> | visgl/math.gl | [fix(core): keep mat4.lookAt valid when up is parallel to the line of sight](https://github.com/visgl/math.gl/pull/762) | Nov 27 |
 | <img src="https://github.com/BabylonJS.png?size=40" width="18" height="18"> | BabylonJS/Babylon.js | [Make Curve3.ArcThru3Points full circles end once on the first point](https://github.com/BabylonJS/Babylon.js/pull/19228) | Nov 27 |
 | <img src="https://github.com/jsxgraph.png?size=40" width="18" height="18"> | jsxgraph/jsxgraph | [Keep snapped slider values inside the slider range](https://github.com/jsxgraph/jsxgraph/pull/862) | Nov 27 |
 | <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[System Monitor] Show sizes that round up to 1024 in the next unit](https://github.com/raycast/extensions/pull/34049) | Nov 27 |
-| <img src="https://github.com/raycast.png?size=40" width="18" height="18"> | raycast/extensions | [[Discogs] Encode the search text in the API query](https://github.com/raycast/extensions/pull/34050) | Nov 27 |
 
 **Open pull requests**
 
